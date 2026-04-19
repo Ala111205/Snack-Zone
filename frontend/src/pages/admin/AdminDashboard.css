@@ -1,0 +1,6 @@
+.admd-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+@media (max-width: 960px) { .admd-grid { grid-template-columns: 1fr; } }

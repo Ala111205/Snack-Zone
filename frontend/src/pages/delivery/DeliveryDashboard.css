@@ -1,0 +1,173 @@
+.ddb-page { display:flex; flex-direction:column; gap:18px; }
+
+/* Stats */
+.ddb-stats {
+  display:flex; align-items:center; gap:0;
+  background:#fff; border-radius:18px; padding:20px 28px;
+  box-shadow:0 2px 10px rgba(26,26,46,0.07);
+  border:1px solid rgba(26,26,46,0.04);
+}
+.ddb-stat { flex:1; text-align:center; }
+.ddb-stat-val { display:block; font-family:var(--font-display); font-size:1.7rem; font-weight:800; color:var(--charcoal); line-height:1.1; margin-bottom:4px; }
+.ddb-stat-label { font-size:0.72rem; color:var(--text-muted); font-family:var(--font-display); font-weight:600; text-transform:uppercase; letter-spacing:0.5px; }
+.ddb-stat-divider { width:1px; height:40px; background:var(--border); flex-shrink:0; }
+
+/* Tabs */
+.ddb-tabs { display:flex; gap:8px; }
+.ddb-tab {
+  display:flex; align-items:center; gap:6px;
+  flex:1; padding:12px 16px; border-radius:14px;
+  border:2px solid var(--border); background:#fff;
+  font-family:var(--font-display); font-size:0.84rem; font-weight:700;
+  color:var(--text-secondary); cursor:pointer; transition:var(--transition);
+  justify-content:center;
+}
+.ddb-tab:hover { border-color:#0EA5E9; color:#0EA5E9; }
+.ddb-tab--active { background:#0EA5E9; border-color:#0EA5E9; color:#fff; box-shadow:0 4px 16px rgba(14,165,233,0.35); }
+.ddb-tab-badge { background:rgba(255,255,255,0.25); padding:2px 6px; border-radius:100px; font-size:0.72rem; }
+
+/* List */
+.ddb-list { display:flex; flex-direction:column; gap:12px; }
+
+.ddb-card {
+  background:#fff; border-radius:18px; padding:18px 20px;
+  box-shadow:0 2px 10px rgba(26,26,46,0.07);
+  border:1px solid rgba(26,26,46,0.04);
+  cursor:pointer; transition:var(--transition);
+  display:flex; flex-direction:column; gap:12px;
+}
+.ddb-card:hover { transform:translateY(-3px); box-shadow:0 8px 28px rgba(26,26,46,0.11); }
+.ddb-card--active { border-left:4px solid #0EA5E9; }
+
+.ddb-card-top { display:flex; justify-content:space-between; align-items:center; gap:10px; }
+.ddb-order-id { display:flex; align-items:center; gap:8px; font-family:var(--font-display); font-weight:800; font-size:0.9rem; color:var(--charcoal); }
+.ddb-otp-badge { background:rgba(139,92,246,0.1); color:#7C3AED; padding:2px 8px; border-radius:100px; font-size:0.67rem; font-weight:700; white-space:nowrap; }
+.ddb-status { padding:4px 10px; border-radius:100px; font-family:var(--font-display); font-size:0.72rem; font-weight:700; white-space:nowrap; }
+
+.ddb-customer { display:flex; align-items:center; gap:12px; }
+.ddb-customer-avatar { width:40px; height:40px; background:#0EA5E9; color:#fff; border-radius:12px; display:flex; align-items:center; justify-content:center; font-family:var(--font-display); font-weight:800; font-size:1rem; flex-shrink:0; }
+.ddb-customer > div { flex:1; }
+.ddb-customer strong { display:block; font-family:var(--font-display); font-size:0.9rem; color:var(--charcoal); margin-bottom:3px; }
+.ddb-customer span { font-size:0.76rem; color:var(--text-muted); display:flex; align-items:center; gap:4px; }
+.ddb-call-btn { width:38px; height:38px; background:rgba(34,197,94,0.1); border:1px solid rgba(34,197,94,0.25); border-radius:10px; display:flex; align-items:center; justify-content:center; color:var(--success); text-decoration:none; transition:var(--transition); flex-shrink:0; }
+.ddb-call-btn:hover { background:var(--success); color:#fff; }
+
+.ddb-meta { display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+.ddb-meta span { font-size:0.76rem; color:var(--text-secondary); font-family:var(--font-display); font-weight:500; background:#F8F9FC; padding:3px 9px; border-radius:7px; }
+.ddb-pay-badge { font-size:0.68rem!important; font-weight:700!important; }
+.ddb-pay-badge.cod  { background:rgba(245,158,11,0.1)!important; color:var(--warning)!important; }
+.ddb-pay-badge.paid { background:rgba(34,197,94,0.1)!important;  color:var(--success)!important; }
+
+.ddb-card-footer { display:flex; justify-content:space-between; align-items:center; padding-top:4px; border-top:1px solid rgba(26,26,46,0.05); }
+.ddb-card-footer > span:first-child { font-size:0.74rem; color:var(--text-muted); }
+.ddb-tap-hint { font-family:var(--font-display); font-size:0.74rem; font-weight:600; color:#0EA5E9; }
+
+.ddb-empty { display:flex; flex-direction:column; align-items:center; gap:14px; padding:80px 24px; text-align:center; }
+.ddb-empty span { font-size:3.5rem; animation:float 2s ease-in-out infinite; }
+.ddb-empty h3 { font-size:1.1rem; color:var(--charcoal); }
+.ddb-empty p  { font-size:0.84rem; color:var(--text-muted); max-width:280px; }
+
+@media (max-width:480px) {
+  .ddb-stats { padding:16px; gap:0; }
+  .ddb-stat-val { font-size:1.4rem; }
+}
+
+/* Pickup alert banner */
+.ddb-pickup-alert {
+  display: flex; align-items: center; gap: 14px;
+  background: rgba(245,158,11,0.1);
+  border: 1px solid rgba(245,158,11,0.3);
+  border-radius: 16px; padding: 14px 18px;
+  animation: fadeInUp 0.4s ease;
+}
+.ddb-alert-icon { font-size: 1.6rem; flex-shrink: 0; animation: float 1.5s ease-in-out infinite; }
+.ddb-pickup-alert strong { display: block; font-family: var(--font-display); font-size: 0.9rem; color: var(--charcoal); margin-bottom: 2px; }
+.ddb-pickup-alert p     { font-size: 0.78rem; color: var(--text-muted); margin: 0; }
+
+/* Card variants */
+.ddb-card--pickup { border-left: 4px solid #F59E0B; cursor: default; }
+.ddb-card--active { border-left: 4px solid #0EA5E9; }
+
+/* Shop row */
+.ddb-shop-row {
+  display: flex; align-items: center; gap: 9px;
+  background: rgba(245,158,11,0.06);
+  border-radius: 10px; padding: 8px 12px;
+  border: 1px solid rgba(245,158,11,0.15);
+}
+.ddb-shop-icon { font-size: 1.1rem; flex-shrink: 0; }
+.ddb-shop-row > div { flex: 1; min-width: 0; }
+.ddb-shop-row strong { display: block; font-family: var(--font-display); font-size: 0.84rem; color: var(--charcoal); }
+.ddb-shop-row span   { font-size: 0.72rem; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
+
+/* Pickup & navigate buttons */
+.ddb-pickup-btn {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  width: 100%; padding: 13px;
+  background: linear-gradient(135deg, #F59E0B, #D97706);
+  color: #fff; border: none; border-radius: 13px;
+  font-family: var(--font-display); font-size: 0.9rem; font-weight: 800;
+  cursor: pointer; transition: var(--transition);
+  box-shadow: 0 6px 20px rgba(245,158,11,0.4);
+  margin-top: 4px;
+}
+.ddb-pickup-btn:hover   { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(245,158,11,0.5); }
+.ddb-pickup-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+.ddb-navigate-btn {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  width: 100%; padding: 13px;
+  background: linear-gradient(135deg, #0EA5E9, #0284C7);
+  color: #fff; border: none; border-radius: 13px;
+  font-family: var(--font-display); font-size: 0.9rem; font-weight: 800;
+  cursor: pointer; transition: var(--transition);
+  box-shadow: 0 6px 20px rgba(14,165,233,0.4);
+  margin-top: 4px;
+}
+.ddb-navigate-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(14,165,233,0.5); }
+
+/* Earnings grid */
+.ddb-earnings-grid {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 12px;
+}
+.ddb-earning-card {
+  background: #fff; border-radius: 16px; padding: 16px;
+  display: flex; align-items: center; gap: 12px;
+  box-shadow: 0 2px 10px rgba(26,26,46,0.07);
+  border: 1px solid rgba(26,26,46,0.04);
+}
+.ddb-earning-icon {
+  width: 42px; height: 42px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem; flex-shrink: 0;
+}
+.ddb-earning-card > div { flex: 1; min-width: 0; }
+.ddb-earning-val   { display: block; font-family: var(--font-display); font-size: 1.15rem; font-weight: 800; color: var(--charcoal); }
+.ddb-earning-label { display: block; font-size: 0.68rem; color: var(--text-muted); font-family: var(--font-display); font-weight: 600; text-transform: uppercase; letter-spacing: 0.4px; margin-top: 2px; }
+
+/* Distance & petrol badges */
+.ddb-dist-badge   { background: rgba(59,130,246,0.1)!important; color: #3B82F6!important; font-weight: 700!important; }
+.ddb-petrol-badge { background: rgba(239,68,68,0.08)!important; color: var(--error)!important; font-weight: 700!important; }
+
+/* COD buttons */
+.ddb-cod-btn {
+  width: 100%; padding: 11px; border: none;
+  background: rgba(245,158,11,0.12);
+  border: 1px solid rgba(245,158,11,0.3);
+  color: var(--warning); border-radius: 12px;
+  font-family: var(--font-display); font-size: 0.86rem; font-weight: 700;
+  cursor: pointer; transition: var(--transition); margin-top: 4px;
+}
+.ddb-cod-btn:hover { background: rgba(245,158,11,0.2); }
+.ddb-cod-done {
+  text-align: center; padding: 10px; font-family: var(--font-display);
+  font-size: 0.82rem; font-weight: 700; color: var(--success);
+  background: rgba(34,197,94,0.07); border-radius: 10px; margin-top: 4px;
+}
+
+@media (max-width: 600px) {
+  .ddb-earnings-grid { grid-template-columns: 1fr 1fr; }
+  .ddb-earnings-grid .ddb-earning-card:last-child { grid-column: 1/-1; }
+}
