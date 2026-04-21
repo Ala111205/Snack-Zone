@@ -20,9 +20,9 @@ const sendOTPController = async (req, res) => {
       const exists = await User.findOne({ phone: cp });
       if (exists) return res.status(400).json({ message: 'Phone already registered' });
     }
-    if (purpose === 'login') {
+    if (purpose === 'login' || purpose === 'reset') {
       const user = await User.findOne({ phone: cp });
-      if (!user) return res.status(404).json({ message: 'No account with this number' });
+      if (!user) return res.status(404).json({ message: 'No account found with this number' });
     }
     const result = await sendOTP(cp, purpose);
     res.json(result);
@@ -167,6 +167,31 @@ const getMe = async (req, res) => {
   } catch (err) { res.status(500).json({ message: err.message }); }
 };
 
+/* ── Reset Password via OTP ──────────────────────────── */
+const resetPassword = async (req, res) => {
+  try {
+    const { phone, otp, newPassword } = req.body;
+    if (!phone || !otp || !newPassword) return res.status(400).json({ message: 'Phone, OTP and new password required' });
+    if (newPassword.length < 6) return res.status(400).json({ message: 'Password must be at least 6 characters' });
+
+    const cp = clean(phone);
+    const otpResult = await verifyOTP(cp, otp, 'reset');
+    if (!otpResult.valid) return res.status(400).json({ message: otpResult.message });
+
+    const user = await User.findOne({ phone: cp });
+    if (!user) return res.status(404).json({ message: 'No account found with this number' });
+
+    user.password = newPassword;
+    await user.save();
+
+    // Clear session cache
+    const redis = getClient();
+    if (!redis.isNoop) await redis.del(KEYS.userSession(user._id.toString()));
+
+    res.json({ message: 'Password reset successfully! Please login with your new password.' });
+  } catch (err) { res.status(500).json({ message: err.message }); }
+};
+
 /* ── Delivery Boy Register (admin-created only, but self-register option too) ──
    NOTE: Delivery boys created by admin via /api/admin/delivery-boy don't need OTP.
    This endpoint lets a delivery boy self-register, but sets isActive:false
@@ -198,4 +223,4 @@ const registerDelivery = async (req, res) => {
   } catch (err) { res.status(500).json({ message: err.message }); }
 };
 
-module.exports = { sendOTPController, register, registerShopkeeper, registerDelivery, login, adminLogin, logout, getMe };
+module.exports = { sendOTPController, register, registerShopkeeper, registerDelivery, login, adminLogin, logout, getMe, resetPassword };

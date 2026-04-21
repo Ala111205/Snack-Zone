@@ -4,6 +4,7 @@ import { API, useAuth } from '../context/AuthContext.jsx';
 import SnackCard from '../components/user/SnackCard.jsx';
 import LocationPicker from '../components/user/LocationPicker.jsx';
 import './HomePage.css';
+import { SnackCardSkeleton } from '../components/common/Skeletons.jsx';
 
 const CATEGORIES = ['all','chips','cookies','candy','nuts','beverages','healthy','chocolate','other'];
 const CAT_ICONS  = { all:'🌟', chips:'🍟', cookies:'🍪', candy:'🍬', nuts:'🥜', beverages:'🧃', healthy:'🥗', chocolate:'🍫', other:'🎁' };
@@ -94,41 +95,60 @@ export default function HomePage() {
               <h1>Snack More,<br /><span>Stress Less</span></h1>
               <p>Order your favourite snacks from local shops. Fast delivery, great taste.</p>
 
+              {/* ── Search labels ── */}
+              <div className="hero-search-labels">
+                <span>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                  Search Snacks
+                </span>
+                <span>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                  Find a Shop
+                </span>
+              </div>
+
               {/* ── Dual search bar ── */}
               <div className="hero-search-bar">
                 {/* Snack search */}
                 <form className="hero-snack-search" onSubmit={handleSnackSearch}>
-                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                     <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
                   </svg>
                   <input
-                    placeholder="Search snacks…"
+                    placeholder="Search snacks… (chips, cookies…)"
                     value={searchInput}
                     onChange={e => setSearchInput(e.target.value)}
+                    autoComplete="off"
                   />
                   {searchInput && (
-                    <button type="button" className="hero-clear-btn" onClick={() => { setSearchInput(''); setSearch(''); }}>✕</button>
+                    <button type="button" className="hero-clear-btn" title="Clear" onClick={() => { setSearchInput(''); setSearch(''); }}>✕</button>
                   )}
-                  <button type="submit" className="hero-search-btn">Search</button>
+                  <button type="submit" className="hero-search-btn">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                    </svg>
+                    Search
+                  </button>
                 </form>
 
                 <div className="hero-search-divider">or</div>
 
                 {/* Shop search */}
                 <div className="hero-shop-search" ref={shopSearchRef}>
-                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                     <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
                     <polyline points="9 22 9 12 15 12 15 22"/>
                   </svg>
                   <input
-                    placeholder="Search shop by name…"
+                    placeholder="Find a shop by name…"
                     value={shopQuery}
                     onChange={e => setShopQuery(e.target.value)}
                     onFocus={() => shopResults.length > 0 && setShowShopDrop(true)}
+                    autoComplete="off"
                   />
                   {shopSearching && <span className="hero-shop-spin" />}
                   {shopQuery && !shopSearching && (
-                    <button type="button" className="hero-clear-btn" onClick={() => { setShopQuery(''); setShopResults([]); setShowShopDrop(false); }}>✕</button>
+                    <button type="button" className="hero-clear-btn" title="Clear" onClick={() => { setShopQuery(''); setShopResults([]); setShowShopDrop(false); }}>✕</button>
                   )}
 
                   {/* Dropdown results */}
@@ -241,16 +261,7 @@ export default function HomePage() {
 
           {snackLoad ? (
             <div className="grid-4">
-              {Array(8).fill(0).map((_, i) => (
-                <div key={i} style={{ borderRadius:24, overflow:'hidden' }}>
-                  <div className="skeleton" style={{ height:180 }} />
-                  <div style={{ padding:16, background:'white', display:'flex', flexDirection:'column', gap:8 }}>
-                    <div className="skeleton" style={{ height:12, width:'40%', borderRadius:6 }} />
-                    <div className="skeleton" style={{ height:18, width:'70%', borderRadius:6 }} />
-                    <div className="skeleton" style={{ height:12, borderRadius:6 }} />
-                  </div>
-                </div>
-              ))}
+              <SnackCardSkeleton count={8} />
             </div>
           ) : snacks.length === 0 ? (
             <div className="empty-state">

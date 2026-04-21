@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { API } from '../context/AuthContext.jsx';
 import SnackCard from '../components/user/SnackCard.jsx';
 import './ShopDetailPage.css';
+import { SnackCardSkeleton } from '../components/common/Skeletons.jsx';
 
 const CATS = ['all','chips','cookies','candy','nuts','beverages','healthy','chocolate','other'];
 const IMG_BASE = 'http://localhost:5000';
@@ -176,16 +177,7 @@ export default function ShopDetailPage() {
 
         {loading ? (
           <div className="grid-4">
-            {Array(8).fill(0).map((_, i) => (
-              <div key={i} style={{ borderRadius: 24, overflow:'hidden' }}>
-                <div className="skeleton" style={{ height: 160 }} />
-                <div style={{ padding:16, background:'white', display:'flex', flexDirection:'column', gap:8 }}>
-                  <div className="skeleton" style={{ height:12, width:'40%', borderRadius:6 }} />
-                  <div className="skeleton" style={{ height:18, width:'70%', borderRadius:6 }} />
-                  <div className="skeleton" style={{ height:12, borderRadius:6 }} />
-                </div>
-              </div>
-            ))}
+            <SnackCardSkeleton count={8} />
           </div>
         ) : snacks.length === 0 ? (
           <div className="empty-state">

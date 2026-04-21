@@ -1,0 +1,84 @@
+/* ── Skeleton animation is defined in index.css (shimmer) ── */
+
+/* Generic building block */
+.sk-box { display: block; }
+
+/* Snack card skeleton */
+.sk-snack-card {
+  background: #fff;
+  border-radius: 20px;
+  overflow: hidden;
+  animation: fadeInUp 0.4s ease both;
+}
+.sk-snack-img  { height: 170px; width: 100%; }
+.sk-snack-body { padding: 14px; display: flex; flex-direction: column; gap: 8px; }
+.sk-snack-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 4px; }
+
+/* Shop card skeleton */
+.sk-shop-card {
+  background: #fff;
+  border-radius: 22px;
+  overflow: hidden;
+  animation: fadeInUp 0.4s ease both;
+}
+.sk-shop-img  { height: 160px; width: 100%; }
+.sk-shop-body { padding: 16px; display: flex; flex-direction: column; gap: 9px; }
+.sk-shop-row  { display: flex; gap: 8px; align-items: center; }
+
+/* Order card skeleton */
+.sk-order-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 18px 20px;
+  display: flex; flex-direction: column; gap: 12px;
+  animation: fadeInUp 0.4s ease both;
+}
+.sk-order-hdr  { display: flex; justify-content: space-between; align-items: center; }
+.sk-order-chips{ display: flex; gap: 8px; flex-wrap: wrap; }
+.sk-order-ftr  { display: flex; justify-content: space-between; align-items: center; padding-top: 8px; border-top: 1px solid rgba(26,26,46,0.06); }
+
+/* Delivery card skeleton */
+.sk-delivery-card {
+  background: #fff;
+  border-radius: 18px;
+  padding: 16px;
+  display: flex; flex-direction: column; gap: 6px;
+  animation: fadeInUp 0.4s ease both;
+}
+
+/* Stat card skeleton */
+.sk-stat-card {
+  background: #fff;
+  border-radius: 18px;
+  padding: 18px 20px;
+  display: flex; align-items: center; gap: 14px;
+  animation: fadeInUp 0.4s ease both;
+}
+.sk-stat-icon { width: 50px; height: 50px; border-radius: 14px; flex-shrink: 0; }
+
+/* Grid wrappers */
+.sk-snack-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 20px;
+}
+
+/* Full page skeleton */
+.sk-page { padding-top: 80px; min-height: 100vh; background: var(--cream); }
+.sk-page-inner { max-width: 1200px; margin: 0 auto; padding: 40px 24px; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .sk-snack-img  { height: 140px; }
+  .sk-shop-img   { height: 130px; }
+  .sk-snack-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+}
+@media (max-width: 480px) {
+  .sk-snack-img  { height: 120px; }
+  .sk-snack-body { padding: 10px; }
+  .sk-shop-img   { height: 110px; }
+}
+@media (max-width: 360px) {
+  .sk-stat-card  { padding: 14px; }
+  .sk-stat-icon  { width: 40px; height: 40px; }
+}

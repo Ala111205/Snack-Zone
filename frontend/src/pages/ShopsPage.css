@@ -70,3 +70,7 @@
   .sp-header { flex-direction: column; }
   .sp-grid   { grid-template-columns: 1fr; }
 }
+
+@media (max-width: 768px)  { .sp-header { flex-direction: column; align-items: stretch; gap: 12px; } .sp-search-bar { width: 100%; } }
+@media (max-width: 480px)  { .sp-grid { grid-template-columns: 1fr !important; } }
+@media (max-width: 360px)  { .sp-filters { flex-wrap: wrap; gap: 5px; } .sp-filter-btn { font-size: 0.74rem; padding: 6px 10px; } }

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { API } from '../../context/AuthContext.jsx';
 import AdminLayout from '../../components/admin/AdminLayout.jsx';
 import './AdminDashboard.css';
+import { StatCardSkeleton } from '../../components/common/Skeletons.jsx';
 
 const STATUS_COLOR = {
   placed:'#8B5CF6', confirmed:'#3B82F6', preparing:'#F59E0B',
@@ -21,9 +22,11 @@ export default function AdminDashboard() {
       .finally(() => setLoading(false));
   }, []);
 
-  if (loading) return (
+    if (loading) return (
     <AdminLayout title="Dashboard">
-      <div className="adm-page-loading"><div className="spinner" /><p>Loading dashboard…</p></div>
+      <div className="adm-stat-grid">
+        <StatCardSkeleton count={4} />
+      </div>
     </AdminLayout>
   );
 

@@ -4,6 +4,7 @@ import { API } from '../../context/AuthContext.jsx';
 import DeliveryLayout from './DeliveryLayout.jsx';
 import toast from 'react-hot-toast';
 import './DeliveryDashboard.css';
+import { DeliveryCardSkeleton } from '../../components/common/Skeletons.jsx';
 
 /* ── Haversine distance in km ── */
 const haversine = (lat1, lng1, lat2, lng2) => {

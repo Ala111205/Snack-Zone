@@ -114,6 +114,11 @@ export default function LoginPage() {
                   onKeyDown={e => e.key === 'Enter' && handleSendOTP()} />
               </div>
             </div>
+            <div style={{ display:'flex', justifyContent:'flex-end' }}>
+              <Link to="/forgot-password" style={{ fontSize:'0.78rem', color:'var(--saffron)', fontFamily:'var(--font-display)', fontWeight:600 }}>
+                Forgot Password?
+              </Link>
+            </div>
             <button className="btn btn-outline btn-full" onClick={handleSendOTP} disabled={sending || otpSent}>
               {sending ? 'Sending OTP…' : otpSent ? '✓ OTP Sent' : 'Send OTP to Phone'}
             </button>

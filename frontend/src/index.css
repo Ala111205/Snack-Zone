@@ -399,218 +399,546 @@ a { text-decoration: none; color: inherit; }
 .adm-empty > span { font-size: 2.2rem; }
 
 /* ══════════════════════════════════════════════════════
-   GLOBAL RESPONSIVE IMPROVEMENTS
-   Works across: Desktop (1280+), Laptop (1024-1279),
-   Tablet (768-1023), Mobile (< 768)
-══════════════════════════════════════════════════════ */
 
-/* ── Fluid typography ───────────────────────────────── */
-html { font-size: clamp(14px, 1vw + 10px, 16px); }
+/* ═══════════════════════════════════════════════════════════════════
+   COMPLETE RESPONSIVE SYSTEM — 1600px → 1280px → 1024px → 768px
+                              → 600px → 480px → 360px → 300px
+   Covers: Navbar · Hero · Grids · Cards · Auth · Cart · Checkout ·
+           Orders · Track · Admin · Shopkeeper · Delivery · Modals
+   ═══════════════════════════════════════════════════════════════════ */
 
-/* ── Touch targets — minimum 44px for all clickable elements ── */
-@media (max-width: 768px) {
-  .btn, button, a.btn { min-height: 44px; }
-  .qty-btn { min-width: 36px; min-height: 36px; }
-  input, select, textarea { font-size: 16px !important; } /* Prevent iOS zoom */
-}
+/* ── Fluid base font: 14px–17px across viewport widths ── */
+html { font-size: clamp(13.5px, 0.8vw + 11px, 17px); }
 
-/* ── Page wrapper adjustment ────────────────────────── */
-@media (max-width: 768px) {
-  .page-wrapper { padding-top: 64px; }
-}
+/* ── iOS input zoom prevention — must be 16px minimum ── */
+input, select, textarea { font-size: max(16px, 1em); }
 
-/* ── Container ──────────────────────────────────────── */
-@media (min-width: 1280px) { .container { max-width: 1280px; } }
-@media (max-width: 1024px) { .container { padding: 0 20px; } }
-@media (max-width: 480px)  { .container { padding: 0 14px; } }
-
-/* ── Grids responsive ───────────────────────────────── */
+/* ── Touch targets: minimum 44px ── */
 @media (max-width: 1024px) {
-  .grid-4 { grid-template-columns: repeat(3, 1fr); gap: 16px; }
-  .grid-3 { grid-template-columns: repeat(2, 1fr); }
+  .btn, button { min-height: 40px; }
 }
 @media (max-width: 768px) {
-  .grid-4 { grid-template-columns: repeat(2, 1fr); gap: 12px; }
-  .grid-3 { grid-template-columns: repeat(2, 1fr); gap: 12px; }
-  .grid-2 { grid-template-columns: 1fr; }
-}
-@media (max-width: 400px) {
-  .grid-4 { grid-template-columns: 1fr 1fr; gap: 10px; }
-  .grid-3 { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .btn, button { min-height: 44px; }
+  .qty-btn     { min-width: 40px; min-height: 40px; }
 }
 
-/* ── Modal responsive ───────────────────────────────── */
-@media (max-width: 600px) {
-  .modal {
-    width: calc(100vw - 20px);
-    max-height: 95vh;
-    border-radius: 20px;
-    padding: 22px 18px;
-  }
-}
-
-/* ── Auth pages responsive ──────────────────────────── */
-@media (max-width: 900px) {
-  .auth-page { flex-direction: column; min-height: 100vh; }
-  .auth-left  {
-    flex: 0 0 auto;
-    padding: 32px 28px;
-    min-height: 200px;
-  }
-  .auth-right { flex: 1; }
-  .auth-box   { max-width: 100%; }
-}
-@media (max-width: 480px) {
-  .auth-left  { padding: 24px 18px; }
-  .auth-right { padding: 20px 16px; }
-  .form-row   { grid-template-columns: 1fr; }
-}
-
-/* ── Hero responsive ────────────────────────────────── */
-@media (max-width: 768px) {
-  .hero { padding: 90px 0 50px; }
-  .hero-text h1 { font-size: clamp(1.8rem, 7vw, 2.8rem); }
-  .hero-stats { grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 40px; }
-  .hero-actions { flex-direction: column; }
-  .hero-actions .btn { width: 100%; }
-}
-
-/* ── Snack card responsive ──────────────────────────── */
-@media (max-width: 480px) {
-  .snack-body { padding: 10px; }
-  .snack-name { font-size: 0.85rem; }
-  .price-current { font-size: 1rem; }
-}
-
-/* ── Cart page responsive ───────────────────────────── */
-@media (max-width: 900px) {
-  .cart-layout { grid-template-columns: 1fr; }
-  .cart-summary { position: static; }
-}
-@media (max-width: 600px) {
-  .cart-item { flex-wrap: wrap; }
-  .cart-item-controls { width: 100%; justify-content: space-between; }
-}
-
-/* ── Checkout responsive ────────────────────────────── */
-@media (max-width: 1024px) {
-  .checkout-layout { grid-template-columns: 1fr; }
-  .checkout-right  { position: static; }
-}
-@media (max-width: 480px) {
-  .payment-grid { grid-template-columns: repeat(3, 1fr); }
-}
-
-/* ── Orders page responsive ─────────────────────────── */
-@media (max-width: 600px) {
-  .order-card-header { flex-direction: column; }
-  .order-card-footer { flex-direction: column; align-items: flex-start; }
-  .order-actions { flex-wrap: wrap; }
-}
-
-/* ── Order track responsive ─────────────────────────── */
-@media (max-width: 1024px) {
-  .track-layout { grid-template-columns: 1fr; }
-}
-@media (max-width: 600px) {
-  .track-header h1 { font-size: 1.4rem; }
-  .map-container   { height: 260px; }
-  .delivery-boy-info { flex-wrap: wrap; }
-}
-
-/* ── Profile page responsive ────────────────────────── */
-@media (max-width: 900px) {
-  .profile-page { grid-template-columns: 1fr; }
-  .profile-sidebar { position: static; }
-}
-
-/* ── Admin shared responsive ────────────────────────── */
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   BREAKPOINT 1: max-width 1280px
+   Wide laptop / small desktop
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 @media (max-width: 1280px) {
-  .adm-stat-grid { grid-template-columns: repeat(3, 1fr); }
-}
-@media (max-width: 900px) {
-  .adm-stat-grid { grid-template-columns: repeat(2, 1fr); }
-}
-@media (max-width: 480px) {
-  .adm-stat-grid { grid-template-columns: 1fr 1fr; }
-  .adm-content   { padding: 14px 12px; }
+  .container        { max-width: 1100px; padding: 0 28px; }
+  .grid-4           { grid-template-columns: repeat(4, 1fr); gap: 20px; }
+  .grid-3           { grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .adm-stat-grid    { grid-template-columns: repeat(4, 1fr); gap: 16px; }
 }
 
-/* ── Admin orders layout ────────────────────────────── */
-@media (max-width: 1200px) {
-  .aord-layout { grid-template-columns: 1fr; }
-  .aord-list-panel { height: auto; max-height: 420px; }
-}
-
-/* ── Shopkeeper stat grid ───────────────────────────── */
-@media (max-width: 1200px) {
-  .sk-stat-grid { grid-template-columns: repeat(2, 1fr); }
-}
-
-/* ── Shops page responsive ──────────────────────────── */
-@media (max-width: 900px) {
-  .sp-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
-}
-@media (max-width: 600px) {
-  .sp-grid { grid-template-columns: 1fr; }
-  .sp-header { flex-direction: column; align-items: stretch; padding-top: 20px; }
-}
-
-/* ── Shop detail responsive ─────────────────────────── */
-@media (max-width: 600px) {
-  .sdp-banner { height: 200px; }
-  .sdp-info-inner { flex-direction: column; }
-  .sdp-info-item { border-right: none; border-bottom: 1px solid var(--border); padding: 12px 0; margin: 0; }
-}
-
-/* ── Delivery portal responsive ─────────────────────── */
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   BREAKPOINT 2: max-width 1024px
+   Standard laptop
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 @media (max-width: 1024px) {
-  .dop-layout { grid-template-columns: 1fr; }
-}
-@media (max-width: 600px) {
-  .dop-map { height: 240px; }
-  .ddb-stats { flex-direction: column; gap: 12px; }
-  .ddb-stat-divider { width: 100%; height: 1px; }
-  .ddb-tabs { flex-direction: column; }
+  .container        { padding: 0 20px; }
+  .grid-4           { grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .grid-3           { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .grid-2           { grid-template-columns: 1fr; gap: 16px; }
+  .section          { padding: 48px 0; }
+  .page-wrapper     { padding-top: 72px; }
+
+  /* Hero */
+  .hero-content     { flex-direction: column; gap: 32px; text-align: center; }
+  .hero-text h1     { font-size: clamp(2rem, 4vw, 3rem); }
+  .hero-actions     { justify-content: center; }
+  .hero-stats       { grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .hero-visual      { display: none; }
+
+  /* Layouts that split 2-col on desktop */
+  .track-layout     { display: grid; grid-template-columns: 1fr; gap: 20px; }
+  .checkout-layout  { grid-template-columns: 1fr; }
+  .checkout-right   { position: static !important; }
+  .profile-page     { grid-template-columns: 1fr; }
+  .profile-sidebar  { position: static !important; }
+  .aord-layout      { grid-template-columns: 1fr; }
+  .aord-list-panel  { max-height: 400px; }
+  .cart-layout      { grid-template-columns: 1fr; }
+  .cart-summary     { position: static !important; }
+  .dop-layout       { grid-template-columns: 1fr; }
 }
 
-/* ── Focus styles — accessibility ───────────────────── */
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   BREAKPOINT 3: max-width 768px
+   Tablet
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+@media (max-width: 768px) {
+  .container        { padding: 0 16px; }
+  .page-wrapper     { padding-top: 64px; }
+  .section          { padding: 36px 0; }
+
+  /* Grids */
+  .grid-4           { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .grid-3           { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+
+  /* Hero */
+  .hero             { padding: 84px 0 44px; }
+  .hero-text h1     { font-size: clamp(1.8rem, 6vw, 2.4rem); }
+  .hero-label       { font-size: 0.8rem; }
+  .hero-stats       { grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 32px; }
+  .hero-actions     { flex-direction: column; gap: 10px; }
+  .hero-actions .btn { width: 100%; justify-content: center; }
+  .hero-search-bar  { flex-direction: column; gap: 8px; padding: 10px; }
+  .hero-snack-search, .hero-shop-search { min-width: 0; width: 100%; }
+  .hero-search-divider { display: none; }
+
+  /* Navbar (already handled by Navbar.css, but enforce here) */
+  .hamburger        { display: flex !important; }
+
+  /* Category tabs — horizontal scroll, no wrap */
+  .category-tabs    { flex-wrap: nowrap; overflow-x: auto; gap: 6px; padding-bottom: 4px; -webkit-overflow-scrolling: touch; }
+  .category-tabs::-webkit-scrollbar { height: 0; }
+  .cat-tab          { white-space: nowrap; flex-shrink: 0; }
+
+  /* Auth */
+  .auth-page        { flex-direction: column; }
+  .auth-left        { flex: 0 0 auto; min-height: unset; padding: 28px 20px; }
+  .auth-features    { display: none; }
+  .auth-right       { flex: 1; padding: 24px 16px 32px; }
+  .auth-box         { max-width: 100%; }
+
+  /* Admin stats */
+  .adm-stat-grid    { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+
+  /* Shopkeeper order layout  */
+  .sko-layout       { grid-template-columns: 1fr; }
+  .sko-detail       { display: none; }
+  .sko-detail--visible { display: block; }
+
+  /* Orders page */
+  .order-card-header { flex-wrap: wrap; gap: 8px; }
+  .order-card-footer { flex-wrap: wrap; gap: 8px; }
+  .order-actions     { flex-wrap: wrap; gap: 6px; }
+
+  /* Modal */
+  .modal            { width: calc(100vw - 24px); padding: 24px 18px; border-radius: 22px; max-height: 92vh; }
+
+  /* Portal banner */
+  .navbar-portal-banner { padding: 7px 14px; font-size: 0.74rem; }
+  .navbar--with-banner  { top: 36px !important; }
+  body.has-portal-banner .page-wrapper { padding-top: calc(64px + 36px) !important; }
+
+  /* Delivery portal */
+  .dl-content       { padding: 14px 12px; }
+  .dl-topbar        { padding: 0 14px; height: 56px; }
+  .ddb-earnings-grid{ grid-template-columns: repeat(3, 1fr); gap: 8px; }
+
+  /* Shopkeeper stat grid */
+  .sk-stat-grid     { grid-template-columns: repeat(2, 1fr); }
+
+  /* How-it-works */
+  .how-grid         { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+
+  /* Track page */
+  .map-container    { height: 260px !important; }
+
+  /* Delivery order */
+  .dop-map          { height: 260px !important; }
+  .dop-action-bar   { flex-wrap: wrap; gap: 6px; }
+
+  /* Shops page */
+  .sp-grid          { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  .sp-header        { flex-direction: column; align-items: stretch; gap: 12px; }
+
+  /* Cart */
+  .cart-item        { flex-wrap: wrap; gap: 10px; }
+  .cart-item-controls { width: 100%; justify-content: space-between; margin-top: 4px; }
+
+  /* Payment grid */
+  .payment-grid     { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   BREAKPOINT 4: max-width 600px
+   Large mobile
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+@media (max-width: 600px) {
+  /* Auth steps bar — scroll on overflow */
+  .steps-bar        { overflow-x: auto; padding-bottom: 6px; }
+  .steps-bar::-webkit-scrollbar { height: 0; }
+
+  /* Shop detail */
+  .sdp-banner       { height: 180px; }
+  .sdp-info-inner   { flex-direction: column; }
+  .sdp-info-item    { border-right: none; border-bottom: 1px solid var(--border); padding: 10px 0; }
+
+  /* Delivery boy card in track page */
+  .delivery-boy-info { flex-wrap: wrap; gap: 8px; }
+
+  /* Admin orders filters — scroll */
+  .aord-filters     { overflow-x: auto; flex-wrap: nowrap; padding-bottom: 4px; }
+  .aord-filters::-webkit-scrollbar { height: 0; }
+  .aord-filter-btn  { white-space: nowrap; flex-shrink: 0; }
+
+  /* Shopkeeper order filters */
+  .sko-filters      { overflow-x: auto; flex-wrap: nowrap; }
+  .sko-filters::-webkit-scrollbar { height: 0; }
+  .sko-filter       { white-space: nowrap; flex-shrink: 0; }
+
+  /* Delivery dashboard stats — row */
+  .ddb-stats        { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 14px; border-radius: 16px; }
+  .ddb-stat-divider { display: none; }
+  .ddb-stat         { flex-direction: column; align-items: center; gap: 3px; }
+  .ddb-earnings-grid{ grid-template-columns: repeat(2, 1fr); gap: 8px; }
+
+  /* Delivery tabs */
+  .ddb-tabs         { overflow-x: auto; flex-wrap: wrap; gap: 6px; }
+  .ddb-tabs::-webkit-scrollbar { height: 0; }
+  .ddb-tab          { white-space: nowrap; flex-shrink: 0; }
+
+  /* Shops page grid */
+  .sp-grid          { grid-template-columns: 1fr; }
+
+  /* Order items preview */
+  .order-items-preview { flex-wrap: wrap; gap: 5px; }
+
+  /* How-it-works */
+  .how-grid         { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .how-card         { padding: 14px 10px; text-align: center; }
+  .how-card h3      { font-size: 0.9rem; }
+  .how-card p       { font-size: 0.78rem; }
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   BREAKPOINT 5: max-width 480px
+   Standard mobile
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+@media (max-width: 480px) {
+  .container        { padding: 0 14px; }
+  .page-wrapper     { padding-top: 60px; }
+
+  /* Hero */
+  .hero             { padding: 72px 0 36px; }
+  .hero-text h1     { font-size: 1.9rem; line-height: 1.18; }
+  .hero-stats       { gap: 8px; }
+  .stat-card        { padding: 12px 8px; }
+  .stat-num         { font-size: 1.2rem; }
+  .stat-label       { font-size: 0.65rem; }
+  .hero-location-bar { flex-direction: column; gap: 6px; align-items: flex-start; }
+
+  /* Grids */
+  .grid-4           { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .grid-3           { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .grid-2           { grid-template-columns: 1fr; }
+
+  /* Snack cards */
+  .snack-img        { height: 140px; }
+  .snack-body       { padding: 10px 11px; }
+  .snack-name       { font-size: 0.84rem; }
+  .price-current    { font-size: 0.96rem; }
+
+  /* Category tabs */
+  .cat-tab          { padding: 7px 11px; font-size: 0.78rem; }
+
+  /* Auth */
+  .auth-box         { padding: 22px 16px; border-radius: 20px; }
+  .auth-header h1   { font-size: 1.2rem; }
+  .form-row         { grid-template-columns: 1fr; gap: 12px; }
+  .step-dot         { width: 26px; height: 26px; font-size: 0.72rem; }
+  .step-item span   { font-size: 0.66rem; }
+
+  /* Cart */
+  .cart-item-img    { width: 56px; height: 56px; border-radius: 10px; }
+
+  /* Checkout */
+  .payment-grid     { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .checkout-section { padding: 16px; }
+
+  /* Orders */
+  .order-id         { font-size: 0.8rem; }
+  .order-status-badge { font-size: 0.68rem; padding: 4px 9px; }
+  .order-item-chip  { font-size: 0.72rem; padding: 4px 9px; }
+
+  /* Order track */
+  .map-container    { height: 220px !important; }
+  .track-card       { padding: 14px 12px; }
+  .track-item       { flex-wrap: wrap; gap: 6px; }
+  .timeline-icon    { width: 34px; height: 34px; font-size: 1rem; }
+
+  /* Modal */
+  .modal            { padding: 20px 16px; border-radius: 20px; }
+
+  /* Admin stats */
+  .adm-stat-grid    { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .adm-stat-card    { padding: 14px; }
+  .adm-stat-val     { font-size: 1.5rem; }
+  .adm-content      { padding: 14px 12px; }
+
+  /* Admin orders */
+  .aord-detail-panel { padding: 14px 12px; }
+  .aord-item-row    { flex-wrap: wrap; gap: 4px; }
+
+  /* Delivery dashboard */
+  .ddb-earning-card { padding: 12px; }
+  .ddb-earning-val  { font-size: 1rem; }
+  .ddb-earning-label{ font-size: 0.62rem; }
+  .ddb-card         { padding: 14px; }
+
+  /* Delivery order page */
+  .dop-map          { height: 220px !important; }
+  .dop-action-bar   { padding: 10px 12px; font-size: 0.78rem; }
+  .dop-deliver-btn  { padding: 14px; font-size: 0.9rem; }
+  .dop-cod-btn      { padding: 14px; font-size: 0.9rem; }
+  .dop-section      { padding: 14px; }
+  .dop-item-row     { flex-wrap: wrap; gap: 6px; }
+
+  /* Shopkeeper */
+  .sk-topbar        { padding: 0 12px; }
+  .sko-det-hdr      { flex-wrap: wrap; gap: 8px; }
+  .sko-status-btns  { flex-direction: column; gap: 8px; }
+  .sko-status-btn   { width: 100%; }
+
+  /* How-it-works */
+  .how-step         { width: 28px; height: 28px; font-size: 0.8rem; }
+
+  /* Portal banner */
+  .navbar-portal-banner { flex-direction: column; align-items: flex-start; gap: 6px; padding: 8px 14px; }
+  .navbar-portal-return-btn { width: 100%; text-align: center; }
+  .navbar--with-banner  { top: 62px !important; }
+  body.has-portal-banner .page-wrapper { padding-top: calc(60px + 62px) !important; }
+
+  /* De earnings */
+  .de-summary       { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .de-sum-val       { font-size: 1.1rem; }
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   BREAKPOINT 6: max-width 360px
+   Small mobile (most Androids)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+@media (max-width: 360px) {
+  .container        { padding: 0 11px; }
+  h1                { font-size: 1.55rem; }
+  h2                { font-size: 1.15rem; }
+
+  /* Hero */
+  .hero-text h1     { font-size: 1.65rem; }
+  .hero-label       { font-size: 0.7rem; padding: 5px 12px; }
+  .hero-search-bar  { padding: 8px; gap: 6px; }
+
+  /* Grids */
+  .grid-4           { gap: 8px; }
+  .grid-3           { gap: 8px; }
+
+  /* Snack cards */
+  .snack-img        { height: 120px; }
+  .snack-body       { padding: 9px; }
+  .snack-name       { font-size: 0.8rem; }
+
+  /* Navbar */
+  .navbar-inner     { padding: 0 12px; }
+  .logo-text        { font-size: 0.98rem; }
+  .navbar-city-btn  { max-width: 80px; font-size: 0.72rem; padding: 6px 8px; }
+  .cart-btn         { padding: 6px; }
+
+  /* Auth */
+  .auth-box         { padding: 18px 14px; }
+  .auth-header h1   { font-size: 1.1rem; }
+  .input-field      { padding: 11px 13px; }
+  .otp-input        { font-size: 1.3rem; letter-spacing: 5px; }
+  .steps-bar        { gap: 4px; }
+  .step-dot         { width: 24px; height: 24px; }
+  .step-item span   { font-size: 0.6rem; }
+  .auth-btns        { flex-direction: column; gap: 8px; }
+  .auth-btns .btn   { width: 100%; }
+
+  /* Cart */
+  .cart-item-img    { width: 50px; height: 50px; }
+  .qty-btn          { width: 32px; height: 32px; }
+
+  /* Checkout */
+  .payment-grid     { grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
+
+  /* Orders */
+  .order-card       { padding: 12px 11px; }
+  .btn-sm           { padding: 6px 10px; font-size: 0.72rem; }
+
+  /* Track */
+  .map-container    { height: 190px !important; }
+  .dop-map          { height: 190px !important; }
+
+  /* Delivery topbar */
+  .dl-topbar        { padding: 0 10px; height: 54px; }
+  .dl-page-title    { font-size: 0.88rem; }
+  .dl-topbar-online-btn { padding: 5px 9px; font-size: 0.72rem; }
+  .dl-topbar-admin-btn  { padding: 5px 8px; font-size: 0.72rem; }
+
+  /* Delivery dashboard */
+  .ddb-stats        { grid-template-columns: 1fr 1fr 1fr; gap: 6px; padding: 12px; }
+  .ddb-stat-val     { font-size: 1.2rem; }
+  .ddb-stat-label   { font-size: 0.6rem; }
+  .ddb-earnings-grid{ gap: 6px; }
+  .ddb-earning-icon { width: 32px; height: 32px; font-size: 1rem; }
+  .ddb-earning-val  { font-size: 0.94rem; }
+  .ddb-tab          { padding: 7px 9px; font-size: 0.7rem; }
+
+  /* Delivery order page */
+  .dop-action-bar   { padding: 8px 10px; gap: 4px; }
+  .dop-dist-badge, .dop-otp-req { font-size: 0.62rem; padding: 3px 7px; }
+  .dop-section      { padding: 11px; border-radius: 12px; }
+  .dop-deliver-btn  { padding: 13px; font-size: 0.86rem; }
+  .dop-cod-btn      { padding: 13px; font-size: 0.86rem; }
+
+  /* Shopkeeper topbar */
+  .sk-topbar        { padding: 0 10px; height: 54px; }
+  .sk-page-title    { font-size: 0.88rem; }
+
+  /* Admin topbar */
+  .adm-topbar       { padding: 0 10px; height: 54px; }
+  .adm-page-title   { font-size: 0.88rem; }
+
+  /* Admin stat cards */
+  .adm-stat-grid    { gap: 8px; }
+  .adm-stat-card    { padding: 12px 10px; }
+  .adm-stat-val     { font-size: 1.35rem; }
+  .adm-stat-icon    { width: 38px; height: 38px; font-size: 1.1rem; }
+
+  /* Modal */
+  .modal            { padding: 18px 14px; border-radius: 18px; }
+  .modal h3         { font-size: 0.98rem; }
+
+  /* How-it-works */
+  .how-grid         { grid-template-columns: 1fr 1fr; gap: 7px; }
+  .how-card         { padding: 12px 8px; }
+  .how-card h3      { font-size: 0.78rem; }
+  .how-card p       { font-size: 0.68rem; }
+
+  /* De earnings */
+  .de-summary       { grid-template-columns: 1fr 1fr; gap: 7px; }
+  .de-sum-card      { padding: 12px 10px; }
+  .de-sum-val       { font-size: 1rem; }
+
+  /* Section */
+  .section          { padding: 28px 0; }
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   BREAKPOINT 7: max-width 300px
+   Ultra-small (oldest Androids)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+@media (max-width: 300px) {
+  .container        { padding: 0 8px; }
+  h1                { font-size: 1.3rem; }
+  h2                { font-size: 1.05rem; }
+  h3                { font-size: 0.92rem; }
+
+  /* Hero */
+  .hero-text h1     { font-size: 1.35rem; }
+  .hero-stats       { grid-template-columns: 1fr 1fr; gap: 6px; }
+  .stat-card        { padding: 10px 7px; }
+  .stat-num         { font-size: 1rem; }
+  .hero-actions .btn-outline { display: none; }
+
+  /* Grids go 1-col */
+  .grid-4, .grid-3  { grid-template-columns: 1fr; }
+
+  /* Snack card */
+  .snack-img        { height: 110px; }
+  .snack-name       { font-size: 0.76rem; }
+  .snack-price, .price-current { font-size: 0.86rem; }
+
+  /* Navbar */
+  .navbar-city-btn  { display: none; }
+
+  /* Auth */
+  .auth-box         { padding: 14px 10px; }
+  .auth-header h1   { font-size: 1rem; }
+  .steps-bar        { display: none; }
+
+  /* Cart */
+  .cart-item-img    { width: 44px; height: 44px; }
+  .cart-item-name   { font-size: 0.8rem; }
+
+  /* Checkout */
+  .payment-grid     { grid-template-columns: 1fr 1fr; }
+
+  /* Orders */
+  .order-card       { padding: 10px; }
+  .order-id         { font-size: 0.74rem; }
+
+  /* Track */
+  .map-container    { height: 160px !important; }
+  .dop-map          { height: 160px !important; }
+
+  /* Delivery */
+  .ddb-stats        { grid-template-columns: 1fr; gap: 4px; }
+  .ddb-stat         { flex-direction: row; justify-content: space-between; align-items: center; padding: 8px 12px; background: #fff; border-radius: 10px; }
+  .ddb-stat-divider { display: none; }
+  .ddb-earnings-grid{ grid-template-columns: 1fr; gap: 7px; }
+  .ddb-tabs         { flex-direction: column; gap: 5px; }
+  .ddb-tab          { text-align: center; }
+
+  /* Admin */
+  .adm-stat-grid    { grid-template-columns: 1fr; }
+  .adm-stat-card    { padding: 12px 10px; }
+
+  /* Modals */
+  .modal            { padding: 14px 11px; border-radius: 16px; width: calc(100vw - 10px); }
+  .overlay          { background: rgba(0,0,0,0.75); }
+
+  /* How-it-works */
+  .how-grid         { grid-template-columns: 1fr; }
+
+  /* De earnings */
+  .de-summary       { grid-template-columns: 1fr; }
+
+  /* Buttons */
+  .btn-lg           { padding: 12px 16px; font-size: 0.88rem; }
+  .btn-sm           { padding: 6px 9px; font-size: 0.7rem; }
+
+  /* Section */
+  .section          { padding: 22px 0; }
+  .page-wrapper     { padding-top: 56px; }
+
+  /* Break long words */
+  * { word-break: break-word; }
+}
+
+/* ── Portal banner adjustments ─────────────────────── */
+@media (max-width: 360px) {
+  .navbar-portal-banner { padding: 6px 12px; font-size: 0.7rem; }
+  .navbar--with-banner  { top: 54px !important; }
+  body.has-portal-banner .page-wrapper { padding-top: calc(56px + 54px) !important; }
+}
+
+/* ── Scroll snap for horizontal tab bars ────────────── */
+.category-tabs, .sdp-cats, .sko-filters, .aord-filters, .ddb-tabs-row, .de-tabs {
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.category-tabs::-webkit-scrollbar,
+.sdp-cats::-webkit-scrollbar,
+.sko-filters::-webkit-scrollbar,
+.aord-filters::-webkit-scrollbar { display: none; }
+
+/* ── Safe area insets (notched phones) ──────────────── */
+@supports (padding: max(0px)) {
+  .dl-sidebar, .sk-sidebar, .adm-sidebar {
+    padding-bottom: max(12px, env(safe-area-inset-bottom));
+  }
+  body {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+/* ── Focus visible (accessibility) ─────────────────── */
 *:focus-visible {
   outline: 2px solid var(--saffron);
-  outline-offset: 2px;
+  outline-offset: 3px;
   border-radius: 4px;
 }
 
-/* ── Scroll snap for mobile category tabs ───────────── */
-@media (max-width: 768px) {
-  .category-tabs, .sdp-cats, .asn-cats, .sks-cats, .aord-filters, .sko-filters {
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-  }
-  .category-tabs button, .sdp-cats button, .asn-cats button {
-    scroll-snap-align: start;
-  }
-}
-
-/* ── Safe area inset for notched devices ────────────── */
-@supports (padding: max(0px)) {
-  .dl-sidebar, .adm-sidebar, .sk-sidebar {
-    padding-bottom: max(16px, env(safe-area-inset-bottom));
-  }
-  .dl-content, .adm-content, .sk-content {
-    padding-bottom: max(22px, env(safe-area-inset-bottom));
-  }
-}
-
-/* ── Print styles ───────────────────────────────────── */
+/* ── Print ──────────────────────────────────────────── */
 @media print {
-  .navbar, .adm-sidebar, .sk-sidebar, .dl-sidebar { display: none; }
+  .navbar, .adm-sidebar, .sk-sidebar, .dl-sidebar, .no-print { display: none !important; }
   .page-wrapper { padding-top: 0; }
-  .container { max-width: 100%; }
-}
-
-/* ── Portal banner page offset ── */
-body.has-portal-banner .page-wrapper { padding-top: calc(80px + 38px) !important; }
-@media (max-width: 480px) {
-  body.has-portal-banner .page-wrapper { padding-top: calc(64px + 52px) !important; }
+  .container    { max-width: 100%; padding: 0 12px; }
+  * { box-shadow: none !important; }
 }

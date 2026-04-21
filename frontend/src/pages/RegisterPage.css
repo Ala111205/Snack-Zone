@@ -121,3 +121,7 @@
   text-align: left;
 }
 .rp-delivery-note svg { color: #0EA5E9; flex-shrink: 0; margin-top: 2px; }
+
+@media (max-width: 768px)  { .rp-mode-page { padding: 16px; } .rp-mode-card { padding: 24px 18px; } }
+@media (max-width: 480px)  { .rp-mode-btn { padding: 14px; } .rp-mode-icon { font-size: 1.6rem; } }
+@media (max-width: 360px)  { .rp-mode-options { gap: 10px; } .rp-mode-btn strong { font-size: 0.88rem; } .rp-mode-btn p { font-size: 0.72rem; } .rp-shop-hint { font-size: 0.74rem; } }

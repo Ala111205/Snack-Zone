@@ -77,3 +77,40 @@
   .sk-content { padding:18px 14px; }
   .sk-stat-grid { grid-template-columns:1fr 1fr; gap:12px; }
 }
+
+/* Admin contact button */
+.sk-admin-contact {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 14px; border-radius: 12px;
+  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.7); text-decoration: none;
+  font-family: var(--font-display); font-size: 0.8rem; font-weight: 600;
+  transition: var(--transition); margin-bottom: 8px;
+}
+.sk-admin-contact:hover { background: rgba(255,255,255,0.12); color: #fff; }
+
+/* ── Complete responsive for shopkeeper sidebar layout ── */
+@media (max-width: 1280px) {
+  .sk-sidebar   { width: 220px; }
+  .sk-content   { padding: 22px; }
+}
+@media (max-width: 1024px) {
+  .sk-sidebar   { width: 200px; }
+}
+@media (max-width: 768px) {
+  .sk-sidebar   { position: fixed; left: 0; top: 0; bottom: 0; transform: translateX(-100%); width: 260px; z-index: 300; }
+  .sk-sidebar--open { transform: translateX(0); box-shadow: 8px 0 40px rgba(0,0,0,0.4); }
+  .sk-close-btn { display: flex !important; }
+  .sk-hamburger { display: flex !important; }
+  .sk-topbar    { padding: 0 14px; }
+  .sk-content   { padding: 14px 12px; }
+}
+@media (max-width: 480px) {
+  .sk-topbar    { height: 56px; }
+  .sk-page-title { font-size: 0.9rem; }
+}
+@media (max-width: 360px) {
+  .sk-topbar    { padding: 0 10px; height: 52px; }
+  .sk-page-title { font-size: 0.84rem; }
+  .sk-content   { padding: 10px 9px; }
+}

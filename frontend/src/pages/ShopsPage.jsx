@@ -3,6 +3,7 @@ import { useAuth, API } from '../context/AuthContext.jsx';
 import ShopCard from '../components/user/ShopCard.jsx';
 import LocationPicker from '../components/user/LocationPicker.jsx';
 import './ShopsPage.css';
+import { ShopCardSkeleton } from '../components/common/Skeletons.jsx';
 
 export default function ShopsPage() {
   const { selectedCity, changeCity } = useAuth();

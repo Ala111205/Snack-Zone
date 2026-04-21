@@ -105,3 +105,7 @@
   .sdp-snacks-toolbar { flex-direction: column; align-items: flex-start; }
   .sdp-search-wrap { width: 100%; min-width: unset; }
 }
+
+@media (max-width: 768px)  { .sdp-banner { height: 200px; } .sdp-info-inner { flex-direction: column; } .sdp-info-item { border-right: none; border-bottom: 1px solid var(--border); padding: 10px 0; } }
+@media (max-width: 480px)  { .sdp-banner { height: 170px; } .sdp-shop-name { font-size: 1.4rem; } .sdp-snack-grid { grid-template-columns: 1fr 1fr; gap: 10px; } }
+@media (max-width: 360px)  { .sdp-banner { height: 148px; } .sdp-shop-name { font-size: 1.2rem; } .sdp-snack-grid { gap: 8px; } }

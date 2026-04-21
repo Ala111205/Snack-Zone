@@ -125,3 +125,7 @@
   .ash-grid { grid-template-columns:1fr; }
   .ash-modal-hdr,.ash-modal-body { padding-left:16px; padding-right:16px; }
 }
+
+@media (max-width: 768px)  { .adm-shops-grid { grid-template-columns: 1fr 1fr; gap: 12px; } .adm-shops-toolbar { flex-direction: column; gap: 10px; } }
+@media (max-width: 480px)  { .adm-shops-grid { grid-template-columns: 1fr; } .adm-shop-card { flex-direction: column; } }
+@media (max-width: 360px)  { .adm-shop-card { padding: 12px; } .adm-shop-name { font-size: 0.9rem; } }

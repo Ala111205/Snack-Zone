@@ -193,3 +193,39 @@
 .dop-cod-notice svg { color: #D97706; flex-shrink: 0; margin-top: 2px; }
 .dop-cod-notice p   { margin: 0; }
 .dop-cod-notice strong { color: var(--charcoal); }
+
+/* ── DeliveryOrderPage full responsive ── */
+@media (max-width: 1024px) {
+  .dop-layout       { grid-template-columns: 1fr; gap: 16px; }
+}
+@media (max-width: 768px) {
+  .dop-page         { padding: 0; }
+  .dop-action-bar   { flex-wrap: wrap; gap: 6px; padding: 10px 12px; }
+  .dop-map          { height: 260px !important; }
+  .dop-left, .dop-right { width: 100%; }
+  .dop-customer-row { flex-wrap: wrap; gap: 8px; }
+}
+@media (max-width: 480px) {
+  .dop-action-bar   { padding: 9px 10px; gap: 5px; }
+  .dop-order-badge  { font-size: 0.8rem; }
+  .dop-dist-badge, .dop-otp-req { font-size: 0.65rem; padding: 3px 7px; }
+  .dop-map          { height: 220px !important; }
+  .dop-map-hdr      { flex-wrap: wrap; gap: 8px; }
+  .dop-section      { padding: 13px; border-radius: 14px; }
+  .dop-item-row     { flex-wrap: wrap; gap: 5px; }
+  .dop-deliver-btn  { padding: 14px; font-size: 0.9rem; }
+  .dop-cod-btn      { padding: 14px; font-size: 0.9rem; }
+}
+@media (max-width: 360px) {
+  .dop-map          { height: 190px !important; }
+  .dop-section      { padding: 11px; border-radius: 12px; }
+  .dop-cust-info strong { font-size: 0.86rem; }
+  .dop-cust-info span   { font-size: 0.72rem; }
+  .dop-item-name    { font-size: 0.82rem; }
+  .dop-deliver-btn, .dop-cod-btn { padding: 12px; font-size: 0.85rem; }
+  .dop-pickup-btn   { padding: 12px; font-size: 0.85rem; }
+}
+@media (max-width: 300px) {
+  .dop-map          { height: 160px !important; }
+  .dop-action-bar   { padding: 7px 9px; }
+}

@@ -55,6 +55,8 @@ export default function AdminLogin() {
           </button>
           <p style={{ textAlign: 'center', fontSize: '0.82rem', color: 'var(--text-muted)' }}>
             Not an admin? <Link to="/login" style={{ color: 'var(--saffron)', fontWeight: 600 }}>User Login</Link>
+            {' · '}
+            <Link to="/forgot-password" style={{ color: 'var(--text-muted)', fontWeight: 600 }}>Forgot Password?</Link>
           </p>
         </div>
       </div>

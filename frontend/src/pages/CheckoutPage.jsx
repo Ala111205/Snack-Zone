@@ -20,8 +20,60 @@ export default function CheckoutPage() {
   const [selectedAddress, setSelectedAddress] = useState(user?.addresses?.[0] || null);
   const [cardDetails, setCardDetails] = useState({ number: '', expiry: '', cvv: '', name: '' });
   const [upiId, setUpiId] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [notes, setNotes] = useState('');
+  const [loading,          setLoading]          = useState(false);
+  const [notes,            setNotes]            = useState('');
+  const [showUPIModal,     setShowUPIModal]      = useState(false);
+  const [upiPaymentMethod, setUpiPaymentMethod] = useState('');
+  const [upiOrderData,     setUpiOrderData]     = useState(null);
+  const [paymentLaunched,  setPaymentLaunched]  = useState(false);
+
+  /* ── Launch UPI app and then confirm order ── */
+  const handleUPILaunch = () => {
+    const amount  = total;
+    const note    = encodeURIComponent('SnackZone Order');
+    const vpa     = upiId || 'snackzone@upi'; // merchant VPA
+    const deepLinks = {
+      gpay:     `tez://upi/pay?pa=${vpa}&pn=SnackZone&am=${amount}&cu=INR&tn=${note}`,
+      phonepay: `phonepe://pay?pa=${vpa}&pn=SnackZone&am=${amount}&cu=INR&tn=${note}`,
+      paytm:    `paytmmp://pay?pa=${vpa}&pn=SnackZone&am=${amount}&cu=INR&tn=${note}`,
+    };
+    const fallback = {
+      gpay:     `https://gpay.app.goo.gl/`,
+      phonepay: `https://phon.pe/`,
+      paytm:    `https://paytm.com/`,
+    };
+    const link = deepLinks[upiPaymentMethod];
+    // Try deep link first (opens app on mobile)
+    const iframe = document.createElement('iframe');
+    iframe.style.display = 'none';
+    document.body.appendChild(iframe);
+    iframe.src = link;
+    setTimeout(() => { document.body.removeChild(iframe); }, 2000);
+    // Also try window.location for mobile browsers
+    setTimeout(() => {
+      try { window.location.href = link; } catch {}
+    }, 100);
+    setPaymentLaunched(true);
+  };
+
+  const handleUPIConfirmed = async () => {
+    setLoading(true);
+    try {
+      const { data } = await API.post('/orders', upiOrderData);
+      clearCart();
+      setShowUPIModal(false);
+      if (data.devDeliveryOTP) {
+        toast.success(`Order placed! DEV OTP: ${data.devDeliveryOTP}`, { duration: 30000, icon: '🔐' });
+      } else if (data.requiresDeliveryOTP) {
+        toast.success('Order placed! 🔐 Delivery OTP sent via SMS.', { duration: 8000 });
+      } else {
+        toast.success('Order placed! 🎉');
+      }
+      navigate(`/orders/${data._id}/track`);
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Failed to place order');
+    } finally { setLoading(false); }
+  };
 
   const cartShopObj  = cart[0]?.shop;
   const shopDelivFee = cartShopObj?.deliveryFee ?? 40;
@@ -56,6 +108,15 @@ export default function CheckoutPage() {
           : {},
         notes
       };
+
+      // For UPI payments — show payment modal, then place order after confirmation
+      if (['gpay','phonepay','paytm'].includes(paymentMethod)) {
+        setUpiPaymentMethod(paymentMethod);
+        setUpiOrderData(orderData);
+        setShowUPIModal(true);
+        setLoading(false);
+        return; // Order placed from modal confirmation
+      }
 
       const { data } = await API.post('/orders', orderData);
       clearCart();
@@ -226,6 +287,48 @@ export default function CheckoutPage() {
           </div>
         </div>
       </div>
+      {/* ── UPI Payment Modal ── */}
+      {showUPIModal && (
+        <>
+          <div className="overlay" onClick={() => { setShowUPIModal(false); setPaymentLaunched(false); }} />
+          <div className="modal" style={{ maxWidth:400, padding:28, textAlign:'center' }}>
+            <span style={{ fontSize:'3rem', display:'block', marginBottom:12 }}>
+              {upiPaymentMethod==='gpay' ? '🔵' : upiPaymentMethod==='phonepay' ? '🟣' : '🔷'}
+            </span>
+            <h3 style={{ fontSize:'1.15rem', marginBottom:6 }}>
+              Pay ₹{total} via {upiPaymentMethod==='gpay'?'Google Pay':upiPaymentMethod==='phonepay'?'PhonePe':'Paytm'}
+            </h3>
+            <p style={{ fontSize:'0.84rem', color:'var(--text-muted)', marginBottom:20, lineHeight:1.6 }}>
+              {!paymentLaunched
+                ? 'Click the button below to open the payment app. After paying, come back and confirm.'
+                : 'Complete the payment in your app, then tap "I have paid" below.'}
+            </p>
+            {!paymentLaunched ? (
+              <button className="btn btn-primary btn-full btn-lg" style={{ marginBottom:10 }} onClick={handleUPILaunch}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
+                </svg>
+                Open {upiPaymentMethod==='gpay'?'Google Pay':upiPaymentMethod==='phonepay'?'PhonePe':'Paytm'} App
+              </button>
+            ) : (
+              <button className="btn btn-primary btn-full btn-lg" style={{ marginBottom:10, background:'var(--success)' }}
+                onClick={handleUPIConfirmed} disabled={loading}>
+                {loading ? <><span className="asn-mini-spin"/> Placing order…</> : '✅ I have paid — Place Order'}
+              </button>
+            )}
+            <button className="btn btn-ghost btn-full"
+              onClick={() => { setShowUPIModal(false); setPaymentLaunched(false); }}>
+              Cancel
+            </button>
+            {upiId && (
+              <p style={{ fontSize:'0.72rem', color:'var(--text-muted)', marginTop:12 }}>
+                Paying to UPI ID: <strong>{upiId}</strong>
+              </p>
+            )}
+          </div>
+        </>
+      )}
+
     </div>
   );
 }

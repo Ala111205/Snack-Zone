@@ -82,3 +82,9 @@
   cursor: pointer; transition: var(--transition); width: 100%; margin-top: 8px;
 }
 .cart-clear-btn:hover { background: rgba(239,68,68,0.06); }
+
+/* ── Cart page responsive ── */
+@media (max-width: 1024px) { .cart-layout { grid-template-columns: 1fr; } .cart-summary { position: static !important; } }
+@media (max-width: 768px)  { .cart-item { flex-wrap: wrap; } .cart-item-controls { width: 100%; justify-content: space-between; } }
+@media (max-width: 480px)  { .cart-item-img { width: 56px; height: 56px; } .qty-btn { width: 36px; height: 36px; } }
+@media (max-width: 360px)  { .cart-item-img { width: 48px; height: 48px; } .cart-item-name { font-size: 0.82rem; } }

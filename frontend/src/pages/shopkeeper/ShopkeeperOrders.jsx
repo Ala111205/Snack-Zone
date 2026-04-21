@@ -89,13 +89,25 @@ export default function ShopkeeperOrders() {
     finally  { setUpdating(''); }
   };
 
-  // Click handler for status buttons
-  const handleStatusClick = (status) => {
+  // Click handler for status buttons — auto-assigns online delivery boy when marking 'preparing'
+  const handleStatusClick = async (status) => {
     if (status === 'preparing') {
-      // ALWAYS show delivery boy modal when moving to preparing
-      // so the order gets assigned and appears on delivery boy's dashboard
-      setPendingStatus('preparing');
-      setDelivModal(true);
+      setUpdating(selected._id + 'preparing');
+      try {
+        // Try auto-assign first
+        let deliveryBoyId;
+        try {
+          const { data: assignData } = await API.post(`/shopkeeper/delivery-boys/auto-assign/${selected._id}`);
+          deliveryBoyId = assignData.deliveryBoy._id;
+          toast.success(`Auto-assigned to ${assignData.deliveryBoy.name} 🛵`, { duration: 3000 });
+        } catch {
+          // No one online — proceed without assignment, shopkeeper can assign later
+          toast('No delivery partner online. Order marked as Preparing — assign a partner when one comes online.', { icon: 'ℹ️', duration: 4000 });
+        }
+        await updateStatus(selected._id, 'preparing', deliveryBoyId);
+      } finally {
+        setUpdating('');
+      }
     } else if (status === 'cancelled') {
       if (window.confirm('Cancel this order?')) updateStatus(selected._id, 'cancelled');
     } else {

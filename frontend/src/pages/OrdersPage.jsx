@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { API } from '../context/AuthContext.jsx';
 import './OrdersPage.css';
+import { OrderCardSkeleton } from '../components/common/Skeletons.jsx';
 
 const STATUS_CONFIG = {
   placed:           { label:'Order Placed',     icon:'📋', color:'#8B5CF6' },
@@ -24,8 +25,15 @@ export default function OrdersPage() {
   }, []);
 
   if (loading) return (
-    <div className="page-wrapper" style={{ display:'flex', justifyContent:'center', alignItems:'center', minHeight:'60vh' }}>
-      <div className="spinner" />
+    <div className="page-wrapper">
+      <div className="container">
+        <div className="orders-page">
+          <div className="orders-header">
+            <div className="skeleton" style={{ height:32, width:160, borderRadius:10 }} />
+          </div>
+          <OrderCardSkeleton count={3} />
+        </div>
+      </div>
     </div>
   );
 

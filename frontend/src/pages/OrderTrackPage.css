@@ -179,3 +179,10 @@
   background: var(--warning) !important;
   animation: pulse 1s ease-in-out infinite;
 }
+
+/* ── Order track responsive ── */
+@media (max-width: 1024px) { .track-layout { display: grid !important; grid-template-columns: 1fr !important; gap: 16px; } }
+@media (max-width: 768px)  { .map-container { height: 260px !important; } .track-header h1 { font-size: 1.35rem; } }
+@media (max-width: 480px)  { .map-container { height: 220px !important; } .track-card { padding: 14px 12px !important; } .timeline-icon-wrap { width: 36px; } .timeline-icon { width: 34px; height: 34px; font-size: 1rem; } }
+@media (max-width: 360px)  { .map-container { height: 190px !important; } .timeline-content strong { font-size: 0.82rem; } .timeline-content p { font-size: 0.7rem; } .track-item { flex-wrap: wrap; gap: 4px; } }
+@media (max-width: 300px)  { .map-container { height: 160px !important; } }

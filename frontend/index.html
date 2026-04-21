@@ -7,12 +7,59 @@
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍿</text></svg>" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="dns-prefetch" href="https://a.tile.openstreetmap.org" />
+    <link rel="dns-prefetch" href="https://api.cloudflare.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,400&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   </head>
   <body>
     <div id="root"></div>
+  <!-- ── First-paint loading splash — removed after React mounts ── -->
+  <style>
+    #sz-splash {
+      position:fixed; inset:0; background:#FFF8F0;
+      display:flex; align-items:center; justify-content:center;
+      flex-direction:column; gap:14px; z-index:9999;
+      font-family:'DM Sans',sans-serif;
+      transition: opacity 0.35s ease;
+    }
+    #sz-splash-logo { font-size:3.2rem; animation:sz-float 2s ease-in-out infinite; }
+    #sz-splash-name { color:#FF6B2B; font-weight:800; font-size:1.15rem; letter-spacing:0.5px; }
+    #sz-splash-ring {
+      width:38px; height:38px;
+      border:3px solid rgba(255,107,43,0.2);
+      border-top:3px solid #FF6B2B;
+      border-radius:50%;
+      animation:sz-spin 0.75s linear infinite;
+    }
+    @keyframes sz-spin  { to   { transform:rotate(360deg); } }
+    @keyframes sz-float { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-7px); } }
+  </style>
+  <div id="sz-splash">
+    <div id="sz-splash-logo">🍿</div>
+    <div id="sz-splash-name">SnackZone</div>
+    <div id="sz-splash-ring"></div>
+  </div>
+  <script>
+    // Remove splash once React root renders
+    (function() {
+      var el = document.getElementById('sz-splash');
+      if (!el) return;
+      var obs = new MutationObserver(function() {
+        var root = document.getElementById('root');
+        if (root && root.children.length > 0) {
+          el.style.opacity = '0';
+          setTimeout(function(){ el.remove(); }, 350);
+          obs.disconnect();
+        }
+      });
+      obs.observe(document.getElementById('root') || document.body, { childList:true, subtree:true });
+      // Fallback: remove after 5s regardless
+      setTimeout(function(){ el.style.opacity='0'; setTimeout(function(){ el.remove(); }, 350); }, 5000);
+    })();
+  </script>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

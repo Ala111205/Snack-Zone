@@ -127,3 +127,7 @@
   color: var(--success);
 }
 .aus-toggle-btn--inactive:hover { background: rgba(34,197,94,0.18); }
+
+@media (max-width: 768px)  { .aus-tabs { flex-wrap: wrap; } .aus-grid { grid-template-columns: 1fr 1fr; gap: 12px; } }
+@media (max-width: 480px)  { .aus-grid { grid-template-columns: 1fr 1fr; gap: 10px; } .aus-card { padding: 14px; } .aus-name { font-size: 0.9rem; } }
+@media (max-width: 360px)  { .aus-tabs { gap: 5px; } .aus-tab { font-size: 0.74rem; padding: 7px 10px; } .aus-grid { grid-template-columns: 1fr; } }

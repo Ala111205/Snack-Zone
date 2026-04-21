@@ -44,3 +44,45 @@
 .sko-no-select > p  { font-family:var(--font-display); font-size:0.88rem; font-weight:600; }
 
 @media (max-width:1100px) { .sko-layout { grid-template-columns:1fr; } .sko-list { height:auto; max-height:500px; } .sko-detail { position:static; max-height:unset; } }
+
+@media (max-width:360px) {
+  .sko-row-top { flex-wrap:wrap; gap:4px; }
+  .sko-row-cust strong { font-size:0.82rem; }
+  .sko-detail { padding:14px 12px; }
+  .sko-det-hdr h2 { font-size:0.96rem; }
+  .sko-status-btns { flex-direction:column; }
+}
+@media (max-width:300px) {
+  .sko-filter-btn, .sko-filter { min-width:0; font-size:0.65rem; padding:5px 7px; }
+}
+/* ── ShopkeeperOrders full responsive ── */
+@media (max-width: 1024px) {
+  .sko-layout       { grid-template-columns: 1fr; }
+  .sko-detail       { display: none; }
+  .sko-detail--visible { display: flex !important; }
+}
+@media (max-width: 768px) {
+  .sko-toolbar      { flex-direction: column; gap: 8px; align-items: stretch; }
+  .sko-filters      { overflow-x: auto; flex-wrap: nowrap; gap: 5px; padding-bottom: 2px; }
+  .sko-filters::-webkit-scrollbar { display: none; }
+  .sko-filter       { white-space: nowrap; flex-shrink: 0; }
+  .sko-rows         { max-height: none; }
+  .sko-row          { padding: 11px 13px; }
+}
+@media (max-width: 480px) {
+  .sko-row-top      { flex-wrap: wrap; gap: 5px; }
+  .sko-row-status   { font-size: 0.65rem; padding: 3px 8px; }
+  .sko-row-cust     { flex-direction: column; gap: 1px; }
+  .sko-row-bottom   { flex-wrap: wrap; gap: 5px; }
+  .sko-det-hdr      { flex-wrap: wrap; gap: 8px; }
+  .sko-det-hdr h2   { font-size: 1rem; }
+  .sko-status-btns  { flex-direction: column; }
+  .sko-status-btn   { width: 100%; }
+  .sko-item-row     { flex-wrap: wrap; gap: 5px; }
+}
+@media (max-width: 360px) {
+  .sko-filter       { padding: 5px 9px; font-size: 0.68rem; }
+  .sko-row-id       { font-size: 0.78rem; }
+  .sko-row-total    { font-size: 0.9rem; }
+  .sko-det-sec-title { font-size: 0.8rem; }
+}

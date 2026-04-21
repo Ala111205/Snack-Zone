@@ -61,3 +61,7 @@
   .sks-grid { grid-template-columns:1fr 1fr; }
   .sks-row2,.sks-row3 { grid-template-columns:1fr; }
 }
+
+@media (max-width: 768px)  { .sks-snack-grid { grid-template-columns: 1fr 1fr; gap: 12px; } .sks-toolbar { flex-direction: column; gap: 8px; } }
+@media (max-width: 480px)  { .sks-snack-grid { grid-template-columns: 1fr 1fr; gap: 9px; } .sks-snack-img { height: 120px; } }
+@media (max-width: 360px)  { .sks-snack-name { font-size: 0.8rem; } .sks-cats { overflow-x: auto; flex-wrap: nowrap; } .sks-cats::-webkit-scrollbar { display: none; } }

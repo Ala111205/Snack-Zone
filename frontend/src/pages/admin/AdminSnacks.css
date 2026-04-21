@@ -225,3 +225,6 @@
   .asn-modal-hdr,.asn-modal-body,.asn-modal-ftr { padding-left:16px; padding-right:16px; }
   .asn-grid { grid-template-columns:1fr 1fr; }
 }
+
+@media (max-width: 480px)  { .asn-grid { grid-template-columns: 1fr 1fr; gap: 10px; } .asn-snack-img { height: 120px; } }
+@media (max-width: 360px)  { .asn-grid { grid-template-columns: 1fr 1fr; gap: 8px; } .asn-snack-body { padding: 9px; } .asn-snack-name { font-size: 0.8rem; } }

@@ -188,3 +188,6 @@
   max-width: 360px;
   padding: 28px;
 }
+
+@media (max-width: 480px) { .snack-img { height: 135px; } .snack-body { padding: 10px 11px; } .snack-name { font-size: 0.84rem; } .price-current { font-size: 0.96rem; } }
+@media (max-width: 360px) { .snack-img { height: 116px; } .snack-name { font-size: 0.78rem; } .add-btn { font-size: 0.74rem; padding: 6px 9px; } }

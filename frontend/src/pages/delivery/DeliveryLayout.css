@@ -102,3 +102,52 @@
 }
 .dl-topbar-dot.online  { background: var(--success); animation: pulse 1.5s infinite; }
 .dl-topbar-dot.offline { background: #f87171; }
+
+/* Admin contact buttons */
+.dl-admin-contact {
+  display: flex; align-items: center; gap: 7px;
+  padding: 8px 12px; border-radius: 10px;
+  background: rgba(14,165,233,0.1); border: 1px solid rgba(14,165,233,0.2);
+  color: #38BDF8; text-decoration: none;
+  font-family: var(--font-display); font-size: 0.78rem; font-weight: 600;
+  transition: var(--transition);
+}
+.dl-admin-contact:hover { background: rgba(14,165,233,0.2); color: #fff; }
+
+.dl-topbar-admin-btn {
+  display: flex; align-items: center; gap: 5px;
+  padding: 6px 10px; border-radius: 8px;
+  background: rgba(14,165,233,0.1); border: 1px solid rgba(14,165,233,0.2);
+  color: #38BDF8; text-decoration: none;
+  font-family: var(--font-display); font-size: 0.72rem; font-weight: 700;
+  transition: var(--transition); flex-shrink: 0;
+}
+.dl-topbar-admin-btn:hover { background: rgba(14,165,233,0.2); color: #fff; }
+.dl-topbar-admin-label { display: block; }
+
+/* Responsive portal layout */
+@media (max-width: 1280px) { .dl-content { padding: 20px; } }
+@media (max-width: 1024px) { .dl-sidebar { width: 220px; } }
+@media (max-width: 768px) {
+  .dl-sidebar { position: fixed; left: 0; top: 0; bottom: 0; transform: translateX(-100%); width: 260px; z-index: 300; }
+  .dl-sidebar--open { transform: translateX(0); box-shadow: 8px 0 40px rgba(0,0,0,0.5); }
+  .dl-close-btn { display: flex; }
+  .dl-hamburger { display: flex; }
+  .dl-content { padding: 14px 12px; }
+  .dl-online-label { display: none; }
+}
+@media (max-width: 480px) {
+  .dl-topbar { height: 56px; padding: 0 12px; }
+  .dl-topbar-admin-label { display: none; }
+  .dl-content { padding: 12px 10px; }
+}
+@media (max-width: 360px) {
+  .dl-topbar { height: 52px; padding: 0 9px; gap: 6px; }
+  .dl-page-title { font-size: 0.86rem; }
+  .dl-topbar-online-btn { padding: 5px 8px; font-size: 0.7rem; }
+  .dl-topbar-admin-btn  { padding: 5px 7px; }
+  .dl-topbar-avatar { width: 30px; height: 30px; font-size: 0.78rem; }
+}
+@media (max-width: 300px) {
+  .dl-topbar-admin-btn { display: none; }
+}

@@ -7,7 +7,7 @@
 }
 .lp-modal {
   position: fixed;
-  top: 50%; left: 50%;
+  top: 11%; left: 15%;
   transform: translate(-50%, -50%);
   background: var(--white);
   border-radius: 28px;
@@ -119,3 +119,7 @@
 
 .lp-city-skel { height: 44px; border-radius: 12px; }
 .lp-no-cities { text-align: center; padding: 24px; color: var(--text-muted); font-size: 0.88rem; }
+
+@media (max-width: 768px) { .loc-modal { width: calc(100vw - 24px); max-height: 80vh; border-radius: 22px; } }
+@media (max-width: 480px) { .loc-modal { width: calc(100vw - 16px); padding: 16px; } .loc-city-grid { grid-template-columns: 1fr 1fr 1fr; gap: 7px; } }
+@media (max-width: 360px) { .loc-city-grid { grid-template-columns: 1fr 1fr; gap: 6px; } .loc-city-btn { font-size: 0.76rem; padding: 8px; } }

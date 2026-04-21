@@ -51,8 +51,8 @@
   margin: 0 auto;
   padding: 0 24px;
   display: flex;
+  justify-content: space-around;
   align-items: center;
-  gap: 24px;
 }
 
 /* ── Logo ──────────────────────────────────── */
@@ -298,7 +298,7 @@
 .hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
 
 /* ── Mobile ────────────────────────────────── */
-@media (max-width: 768px) {
+@media (max-width: 860px) {
   .hamburger { display: flex; }
   .navbar-links {
     position: fixed;
@@ -419,4 +419,59 @@
   .navbar-portal-banner { padding: 6px 14px; font-size: 0.72rem; }
   .navbar--with-banner { top: 52px !important; }
   .has-portal-banner.page-wrapper { padding-top: calc(64px + 52px) !important; }
+}
+
+/* ── Complete Navbar responsive ── */
+@media (max-width: 1280px) {
+  .navbar-inner   { padding: 0 20px; }
+  .nav-link       { font-size: 0.86rem; }
+}
+@media (max-width: 1024px) {
+  .navbar-links   { gap: 4px; }
+  .nav-link       { padding: 6px 10px; font-size: 0.84rem; }
+}
+/* ✅ Keep navbar links visible till smaller screens */
+@media (max-width: 900px) {
+  .navbar-links {
+    display: flex;
+    flex-wrap: wrap;       /* prevents overflow */
+    justify-content: center;
+  }
+
+  .nav-link {
+    font-size: 0.8rem;     /* slightly compact */
+    padding: 6px 8px;
+  }
+
+  .hamburger {
+    display: flex;         /* optional: keep or remove */
+    justify-content: center;
+  }
+}
+@media (max-width: 768px) {
+  .navbar-inner   { padding: 0 14px; }
+  .navbar         { height: 60px; }
+}
+@media (max-width: 560px) {
+  .navbar-city-btn { display: none; }
+}
+@media (max-width: 480px) {
+  .navbar-inner   { padding: 0 12px; gap: 6px; }
+  .navbar-city-btn { font-size: 0.74rem; padding: 6px 10px; max-width: 110px; }
+  .logo-text      { font-size: 1rem; }
+}
+@media (max-width: 360px) {
+  .navbar-inner   { padding: 0 10px; gap: 5px; }
+  .navbar-city-btn { max-width: 90px; font-size: 0.7rem; }
+  .cart-btn {
+    padding: 5px;
+    width: 32px; height: 42px;
+  }
+  .user-avatar {
+    width: 28px; height: 28px;
+  }
+}
+@media (max-width: 300px) {
+  .navbar-city-btn { display: none; }
+  .logo-text span  { display: none; }
 }

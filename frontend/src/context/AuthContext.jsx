@@ -3,7 +3,60 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 
 const AuthContext = createContext();
+/* ── Lightweight in-memory GET cache ─────────────────────
+   Prevents re-fetching the same endpoint within the TTL window.
+   Cleared on logout. Only caches public endpoints (shops/snacks). ── */
+const apiCache = new Map(); // key → { data, expiresAt }
+const CACHE_TTL = {
+  '/shops':   60000,   // 1 min
+  '/snacks':  45000,   // 45 sec
+};
+
+const getCacheTTL = (url) => {
+  for (const [prefix, ttl] of Object.entries(CACHE_TTL)) {
+    if (url.includes(prefix)) return ttl;
+  }
+  return 0; // no cache
+};
+
+export const clearApiCache = () => apiCache.clear();
+
 const API = axios.create({ baseURL: '/api' });
+
+/* Cache successful GET responses */
+API.interceptors.response.use(response => {
+  const { config, data } = response;
+  if (config.method === 'get') {
+    const ttl = getCacheTTL(config.url || '');
+    if (ttl > 0 && !config.skipCache) {
+      const key = config.url + JSON.stringify(config.params || {});
+      apiCache.set(key, { data, expiresAt: Date.now() + ttl });
+    }
+  }
+  return response;
+});
+
+/* Serve from cache on GET requests */
+API.interceptors.request.use(config => {
+  if (config.method === 'get' && !config.skipCache) {
+    const ttl = getCacheTTL(config.url || '');
+    if (ttl > 0) {
+      const key = config.url + JSON.stringify(config.params || {});
+      const cached = apiCache.get(key);
+      if (cached && cached.expiresAt > Date.now()) {
+        // Return a resolved promise with cached data — bypass network
+        config.adapter = () => Promise.resolve({
+          data:    cached.data,
+          status:  200,
+          headers: {},
+          config,
+          cached:  true,
+        });
+      }
+    }
+  }
+  return config;
+});
 
 API.interceptors.request.use(config => {
   const token = localStorage.getItem('snackzone_token');
@@ -65,6 +118,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     try { await API.post('/auth/logout'); } catch {}
+    clearApiCache();
     localStorage.removeItem('snackzone_token');
     setUser(null);
     setCart([]);

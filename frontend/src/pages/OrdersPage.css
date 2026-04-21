@@ -91,3 +91,23 @@
   .order-card-header { flex-direction: column; }
   .order-card-footer { flex-direction: column; align-items: flex-start; }
 }
+
+/* ── Orders page responsive ── */
+@media (max-width: 1024px) { .orders-page { max-width: 720px; } }
+@media (max-width: 768px)  {
+  .orders-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+  .order-card-header { flex-wrap: wrap; gap: 8px; }
+  .order-card-footer { flex-wrap: wrap; gap: 8px; }
+}
+@media (max-width: 480px)  {
+  .order-card   { padding: 14px 12px; border-radius: 16px; }
+  .order-id     { font-size: 0.8rem; }
+  .order-status-badge { font-size: 0.68rem; padding: 4px 9px; }
+  .order-actions { flex-wrap: wrap; gap: 6px; width: 100%; }
+  .order-actions .btn-sm { flex: 1; min-width: 0; }
+}
+@media (max-width: 360px)  {
+  .order-card   { padding: 11px 10px; }
+  .order-items-preview { flex-wrap: wrap; gap: 4px; }
+  .order-item-chip { font-size: 0.68rem; padding: 3px 7px; }
+}

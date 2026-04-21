@@ -208,3 +208,42 @@
   .aord-row-date { display:none; }
   .aord-det-hdr,.aord-det-section,.aord-final-badge { padding-left:16px; padding-right:16px; }
 }
+
+@media (max-width:360px) {
+  .aord-row { flex-wrap:wrap; gap:6px; padding:10px 12px; }
+  .aord-row-id { font-size:0.8rem; }
+  .aord-row-right { width:100%; justify-content:space-between; }
+  .aord-filter-btn { padding:5px 8px; font-size:0.65rem; }
+  .aord-status-btns { flex-direction:column; }
+}
+/* ── AdminOrders full responsive ── */
+@media (max-width: 1200px) {
+  .aord-layout      { grid-template-columns: 1fr; }
+  .aord-list-panel  { max-height: 420px; }
+  .aord-detail-panel { display: none; }
+  .aord-detail-panel--visible { display: flex !important; }
+}
+@media (max-width: 768px) {
+  .aord-list-toolbar { flex-direction: column; gap: 10px; }
+  .aord-filters     { overflow-x: auto; flex-wrap: nowrap; gap: 5px; padding-bottom: 2px; }
+  .aord-filters::-webkit-scrollbar { display: none; }
+  .aord-filter-btn  { white-space: nowrap; flex-shrink: 0; }
+  .aord-row         { flex-wrap: wrap; padding: 10px 13px; gap: 6px; }
+  .aord-row-right   { width: 100%; justify-content: space-between; }
+}
+@media (max-width: 480px) {
+  .aord-search-wrap { width: 100%; }
+  .aord-filter-btn  { padding: 6px 10px; font-size: 0.68rem; }
+  .aord-row-id      { font-size: 0.8rem; }
+  .aord-status-pill { font-size: 0.64rem; padding: 3px 8px; }
+  .aord-detail-hdr  { flex-wrap: wrap; gap: 8px; }
+  .aord-detail-hdr h2 { font-size: 1rem; }
+  .aord-status-btns { flex-direction: column; }
+  .aord-status-btn  { width: 100%; }
+  .aord-item-row    { flex-wrap: wrap; gap: 5px; }
+}
+@media (max-width: 360px) {
+  .aord-filter-btn  { padding: 5px 8px; font-size: 0.64rem; }
+  .aord-row         { padding: 9px 11px; }
+  .aord-row-total   { font-size: 0.88rem; }
+}

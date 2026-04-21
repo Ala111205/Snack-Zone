@@ -69,3 +69,10 @@
 @media (max-width: 480px) {
   .payment-grid { grid-template-columns: repeat(2, 1fr); }
 }
+
+/* ── Checkout responsive ── */
+@media (max-width: 1024px) { .checkout-layout { grid-template-columns: 1fr; } .checkout-right { position: static !important; } }
+@media (max-width: 768px)  { .checkout-section { padding: 16px; border-radius: 16px; } }
+@media (max-width: 480px)  { .payment-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; } }
+@media (max-width: 360px)  { .payment-grid { grid-template-columns: 1fr 1fr; gap: 6px; } .payment-option { padding: 10px 8px; } .payment-option .label { font-size: 0.68rem; } }
+@media (max-width: 300px)  { .payment-grid { grid-template-columns: 1fr 1fr; } }
