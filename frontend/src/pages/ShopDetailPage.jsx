@@ -27,7 +27,7 @@ export default function ShopDetailPage() {
 
   const fetchShop = async () => {
     try {
-      const { data } = await API.get(`/shops/${id}`);
+      const { data } = await API.get(`/shops/${id}`, { skipCache: true });
       setShop(data);
     } catch {
       navigate('/shops');
@@ -40,7 +40,7 @@ export default function ShopDetailPage() {
       const params = {};
       if (category !== 'all') params.category = category;
       if (search)             params.search    = search;
-      const { data } = await API.get(`/shops/${id}/snacks`, { params });
+      const { data } = await API.get(`/shops/${id}/snacks`, { params, skipCache: true });
       setSnacks(data);
     } catch (err) {
       console.error(err);

@@ -135,6 +135,7 @@
 /* Category Tabs */
 .category-tabs {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
   overflow-x: auto;
   padding-bottom: 8px;
@@ -545,6 +546,7 @@
   .hero-text h1     { font-size: 1.85rem; }
   .hero-label       { font-size: 0.76rem; }
   .stat-card        { padding: 12px 8px; }
+  .btn-incart       { padding: 3px; font-size: 0.6rem; }
   .stat-num         { font-size: 1.2rem; }
   .stat-label       { font-size: 0.62rem; }
   .how-grid         { grid-template-columns: 1fr 1fr; gap: 10px; }

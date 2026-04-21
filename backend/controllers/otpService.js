@@ -33,39 +33,17 @@ const sendViaTwilio = async (phone, otp) => {
 };
 
 const sendViaMSG91 = async (phone, otp) => {
-  try {
-    const res = await axios.post(
-      'https://api.msg91.com/api/v5/otp',
-      {
-        mobile: `91${bare10(phone)}`,
-        otp: otp,
-        otp_length: 6,
-        otp_expiry: 10
-      },
-      {
-        headers: {
-          authkey: process.env.MSG91_AUTH_KEY,
-          'Content-Type': 'application/json'
-        },
-        timeout: 8000
-      }
-    );
-
-    if (res.data.type === 'error') {
-      throw new Error(res.data.message);
-    }
-
-    console.log(`✅ [MSG91] OTP sent to ${phone}`);
-  } catch (err) {
-    console.error('❌ MSG91 ERROR:', err.response?.data || err.message);
-    throw err;
-  }
+  const res = await axios.post('https://api.msg91.com/api/v5/otp',
+    { template_id:process.env.MSG91_TEMPLATE_ID, mobile:`91${bare10(phone)}`, otp, otp_length:6, otp_expiry:10 },
+    { headers:{ authkey:process.env.MSG91_AUTH_KEY }, timeout:8000 });
+  if (res.data.type === 'error') throw new Error(`MSG91: ${res.data.message}`);
+  console.log(`✅ [MSG91] OTP sent`);
 };
 
 const detectProvider = () => {
-  if (process.env.MSG91_AUTH_KEY) return 'msg91';
   if (process.env.FAST2SMS_API_KEY) return 'fast2sms';
   if (process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN && process.env.TWILIO_PHONE_NUMBER) return 'twilio';
+  if (process.env.MSG91_AUTH_KEY && process.env.MSG91_TEMPLATE_ID) return 'msg91';
   return 'dev';
 };
 

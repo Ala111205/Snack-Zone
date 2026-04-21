@@ -70,6 +70,18 @@ router.patch('/shops/:id/approve', async (req, res) => {
     const redis = getClient();
     if (!redis.isNoop && shop.ownerPhone) await redis.del(KEYS.pendingShopkeeper(shop.ownerPhone));
 
+    // Clear Redis shop cache so new shop appears immediately
+    try {
+      const { getClient, KEYS } = require('../config/redis');
+      const redis = getClient();
+      if (!redis.isNoop) {
+        // Clear all city-based shop caches
+        const keys = await redis.keys('shops:city:*');
+        if (keys.length) await Promise.all(keys.map(k => redis.del(k)));
+        await redis.del('shops:cities');
+        await redis.del('admin:stats');
+      }
+    } catch {}
     res.json({ message: `"${shop.name}" approved and is now live!`, shop });
   } catch (err) { res.status(500).json({ message: err.message }); }
 });

@@ -100,7 +100,8 @@ export default function LoginPage() {
                   onChange={e => setPassword(e.target.value)}
                   onKeyDown={e => e.key === 'Enter' && handleLogin()}
                 />
-                <button
+                <button 
+                  className='hide-icon'
                   type="button"
                   onClick={() => setShowPwd(p => !p)}
                   style={{ background:'none', border:'none', cursor:'pointer', padding:'0 2px', color:'var(--text-muted)', flexShrink:0 }}

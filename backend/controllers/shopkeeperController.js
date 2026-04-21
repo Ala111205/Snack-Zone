@@ -106,8 +106,15 @@ const addSnack = async (req, res) => {
     if (req.file) data.image = `/uploads/snacks/${req.file.filename}`;
     const snack = await Snack.create(data);
 
-    await invalidate(KEYS.shopSnacks(shop._id.toString()));
-    res.status(201).json(snack);
+    // Invalidate shop-specific snack cache AND any snack list that might be cached
+    const redis = require('../config/redis').getClient();
+    if (!redis.isNoop) {
+      await redis.del(`snacks:shop:${shop._id.toString()}`);
+      // Clear all snack cache keys
+      const snackKeys = await redis.keys('snacks:*');
+      if (snackKeys.length) await Promise.all(snackKeys.map(k => redis.del(k)));
+    }
+    res.status(201).json(await snack.populate('shop', 'name city'));
   } catch (err) { res.status(500).json({ message: err.message }); }
 };
 

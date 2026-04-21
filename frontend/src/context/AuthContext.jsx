@@ -8,8 +8,11 @@ const AuthContext = createContext();
    Cleared on logout. Only caches public endpoints (shops/snacks). ── */
 const apiCache = new Map(); // key → { data, expiresAt }
 const CACHE_TTL = {
-  '/shops':   60000,   // 1 min
-  '/snacks':  45000,   // 45 sec
+  // NOTE: Keep TTLs SHORT so newly added shop/snack items appear quickly
+  // The backend Redis already caches these — frontend cache just avoids repeat
+  // requests on the same page visit (navigation back/forward)
+  '/shops':   20000,   // 20 seconds — shops don't change as often
+  '/snacks':  10000,   // 10 seconds — snacks change when shopkeeper adds items
 };
 
 const getCacheTTL = (url) => {
@@ -98,8 +101,8 @@ export const AuthProvider = ({ children }) => {
   };
 
   /* ── Auth ── */
-  const login = async (phone, password, otp) => {
-    const { data } = await API.post('/auth/login', { phone, password, otp });
+  const login = async (phone, password) => {
+    const { data } = await API.post('/auth/login', { phone, password });
     localStorage.setItem('snackzone_token', data.token);
     setUser(data.user);
     setCart(data.user.cart || []);

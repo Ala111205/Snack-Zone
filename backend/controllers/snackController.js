@@ -38,11 +38,15 @@ const getSnacks = async (req, res) => {
     }
 
     const snacks = await Snack.find(filter)
-      .populate('shop', 'name city isActive status')
+      .populate('shop', 'name city isActive status deliveryFee freeDeliveryAbove estimatedDeliveryTime')
       .sort({ isFeatured: -1, createdAt: -1 });
 
-    // Only return snacks from active/approved shops
-    const activeSnacks = snacks.filter(s => s.shop?.isActive && s.shop?.status === 'approved');
+    // Only return snacks from shops that are approved and active
+    const activeSnacks = snacks.filter(s =>
+      s.shop &&
+      s.shop.isActive === true &&
+      s.shop.status === 'approved'
+    );
     res.json(activeSnacks);
   } catch (err) {
     res.status(500).json({ message: err.message });

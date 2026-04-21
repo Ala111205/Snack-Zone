@@ -20,7 +20,7 @@ export default function ShopsPage() {
       const params = {};
       if (selectedCity) params.city = selectedCity;
       if (search)       params.search = search;
-      const { data } = await API.get('/shops', { params });
+      const { data } = await API.get('/shops', { params, skipCache: true });
       setShops(data);
     } catch (err) {
       console.error(err);

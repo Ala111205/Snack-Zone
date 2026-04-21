@@ -204,7 +204,7 @@ export default function RegisterPage() {
                   <input className="input-field" type={showPwd ? 'text' : 'password'}
                     placeholder="Minimum 6 characters"
                     value={form.password} onChange={e => set('password', e.target.value)} />
-                  <button type="button" onClick={() => setShowPwd(p => !p)}
+                  <button className='hide-icon' type="button" onClick={() => setShowPwd(p => !p)}
                     style={{ background:'none', border:'none', cursor:'pointer', padding:'0 2px', color:'var(--text-muted)', flexShrink:0 }} tabIndex={-1}>
                     {showPwd ? '🙈' : '👁️'}
                   </button>

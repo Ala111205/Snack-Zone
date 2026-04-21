@@ -80,6 +80,13 @@
 .auth-header p a { color: var(--saffron); font-weight: 600; }
 .auth-header p a:hover { text-decoration: underline; }
 
+.hide-icon { 
+    position: absolute;
+    top: 22%;
+    right: 1%;
+    font-size: 20px;
+}
+
 /* Steps */
 .steps-bar {
   display: flex;
@@ -182,6 +189,7 @@
   .auth-box { max-width: 100%; }
   .form-row { grid-template-columns: 1fr; }
   .auth-page { min-height: calc(100vh - 0px); }
+  .hide-icon     { top: 8%; }
 }
 
 /* ── Admin shortcut (on login left panel) ─────── */
@@ -225,6 +233,7 @@
   .auth-left    { padding: 40px 36px; }
   .auth-brand span { font-size: 2.6rem; }
   .auth-brand h2   { font-size: 1.9rem; }
+  .hide-icon     { top: 12%; }
 }
 @media (max-width: 900px) {
   .auth-page    { flex-direction: column; }
@@ -239,6 +248,7 @@
   .auth-left    { padding: 20px 16px; }
   .auth-features { display: none; }
   .auth-right   { padding: 20px 14px 28px; }
+  .hide-icon     { top: 6%; }
 }
 @media (max-width: 480px) {
   .auth-box     { padding: 20px 16px; border-radius: 20px; }
@@ -252,10 +262,22 @@
   .input-field  { padding: 11px 12px; }
   .otp-input    { font-size: 1.2rem; letter-spacing: 5px; }
   .steps-bar    { gap: 3px; }
+  .hide-icon    { top: 0%; font-size: 18px; }
 }
 @media (max-width: 300px) {
   .auth-box     { padding: 13px 10px; }
   .auth-header h1 { font-size: 0.96rem; }
   .steps-bar    { display: none; }
   .auth-brand   { display: none; }
+}
+
+/* Login divider */
+.auth-divider {
+  display: flex; align-items: center; gap: 12px;
+  color: var(--text-muted); font-size: 0.78rem; font-family: var(--font-display);
+  font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase;
+  margin: 4px 0;
+}
+.auth-divider::before, .auth-divider::after {
+  content: ''; flex: 1; height: 1px; background: var(--border);
 }

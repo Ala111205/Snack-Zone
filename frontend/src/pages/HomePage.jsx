@@ -42,7 +42,7 @@ export default function HomePage() {
       if (search)             params.search    = search;
       // Filter snacks by city (via shop's service area) when city is selected
       if (selectedCity)       params.city      = selectedCity;
-      const { data } = await API.get('/snacks', { params });
+      const { data } = await API.get('/snacks', { params, skipCache: true });
       setSnacks(data);
     } catch {}
     finally { setSnackLoad(false); }
@@ -55,7 +55,7 @@ export default function HomePage() {
     shopDebounce.current = setTimeout(async () => {
       setShopSearching(true);
       try {
-        const { data } = await API.get('/shops', { params: { search: shopQuery } });
+        const { data } = await API.get('/shops', { params: { search: shopQuery }, skipCache: true });
         setShopResults(data.slice(0, 6));
         setShowShopDrop(true);
       } catch {}

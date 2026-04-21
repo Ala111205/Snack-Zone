@@ -493,7 +493,7 @@ input, select, textarea { font-size: max(16px, 1em); }
   .hamburger        { display: flex !important; }
 
   /* Category tabs — horizontal scroll, no wrap */
-  .category-tabs    { flex-wrap: nowrap; overflow-x: auto; gap: 6px; padding-bottom: 4px; -webkit-overflow-scrolling: touch; }
+  .category-tabs    { overflow-x: auto; gap: 6px; padding-bottom: 4px; -webkit-overflow-scrolling: touch; }
   .category-tabs::-webkit-scrollbar { height: 0; }
   .cat-tab          { white-space: nowrap; flex-shrink: 0; }
 

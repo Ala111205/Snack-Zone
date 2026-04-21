@@ -37,9 +37,23 @@ const getShops = async (req, res) => {
     }
 
     let filter = { isActive: true, status: 'approved' };
-    if (city)   filter.$or = [{ city:{ $regex:city,$options:'i' } }, { serviceCities:{ $regex:city,$options:'i' } }];
-    if (pincode) { const pOr = [{ pincode }, { servicePincodes:pincode }]; filter.$or = filter.$or ? [...filter.$or,...pOr] : pOr; }
-    if (search)  filter.$text = { $search: search };
+    if (city) {
+      const cityRe = { $regex: city, $options: 'i' };
+      filter.$and = filter.$and || [];
+      filter.$and.push({ $or: [{ city: cityRe }, { serviceCities: cityRe }] });
+    }
+    if (pincode) {
+      filter.$and = filter.$and || [];
+      filter.$and.push({ $or: [{ pincode }, { servicePincodes: pincode }] });
+    }
+    if (search) {
+      // Use $regex for name/city search — works without a text index
+      const re = { $regex: search, $options: 'i' };
+      const searchOr = [{ name: re }, { city: re }, { description: re }];
+      filter.$and = filter.$and
+        ? [...filter.$and, { $or: searchOr }]
+        : [{ $or: searchOr }];
+    }
 
     let shops = await Shop.find(filter).populate('owner','name phone').sort({ rating:-1, totalOrders:-1 });
 
