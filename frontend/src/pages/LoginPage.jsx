@@ -5,60 +5,42 @@ import toast from 'react-hot-toast';
 import './AuthPages.css';
 
 export default function LoginPage() {
-  const { login, sendOTP } = useAuth();
-  const navigate = useNavigate();
+  const { login } = useAuth();
+  const navigate  = useNavigate();
   const [phone,    setPhone]    = useState('');
   const [password, setPassword] = useState('');
-  const [otp,      setOtp]      = useState('');
-  const [otpSent,  setOtpSent]  = useState(false);
+  const [showPwd,  setShowPwd]  = useState(false);
   const [loading,  setLoading]  = useState(false);
-  const [sending,  setSending]  = useState(false);
-
-  const handleSendOTP = async () => {
-    if (!phone || phone.length < 10) { toast.error('Enter a valid 10-digit number'); return; }
-    if (!password)                   { toast.error('Enter your password first'); return; }
-    setSending(true);
-    try {
-      const res = await sendOTP(phone, 'login');
-      if (res.devOtp) toast.success(`DEV OTP: ${res.devOtp}`, { duration: 30000, icon: '🔑' });
-      else toast.success('OTP sent!');
-      setOtpSent(true);
-    } catch (err) {
-      toast.error(err.response?.data?.message || 'Failed to send OTP');
-    } finally { setSending(false); }
-  };
 
   const handleLogin = async () => {
-    if (!phone || !password || !otp) { toast.error('Fill all fields'); return; }
+    if (!phone || phone.length < 10) { toast.error('Enter a valid 10-digit number'); return; }
+    if (!password)                   { toast.error('Enter your password'); return; }
     setLoading(true);
     try {
-      const data = await login(phone, password, otp);
+      const data = await login(phone, password);
       const role = data.user?.role;
-
       if (role === 'admin') {
-        toast.success(`Welcome, ${data.user.name}! Admin Panel 🛡️`);
+        toast.success(`Welcome, ${data.user.name}! 🛡️`);
         navigate('/admin');
+      } else if (role === 'shopowner') {
+        const status = data.user?.shopApprovalStatus;
+        if (status === 'pending') {
+          toast('Your shop is awaiting admin approval.', { icon: '⏳', duration: 5000 });
+        } else if (status === 'rejected') {
+          toast.error('Your shop application was rejected. Contact admin.');
+        } else {
+          toast.success(`Welcome back, ${data.user.name}! 🏪`);
+        }
+        navigate('/shopkeeper');
       } else if (role === 'delivery') {
         if (data.user?.isActive === false) {
-          toast('Your account is pending admin activation. Contact your admin.', { icon: '⏳', duration: 6000 });
+          toast('Your account is pending admin activation.', { icon: '⏳', duration: 6000 });
           return;
         }
         toast.success(`Welcome, ${data.user.name}! 🛵`);
         navigate('/delivery');
-      } else if (role === 'shopowner') {
-        const approvalStatus = data.user?.shopApprovalStatus;
-        if (approvalStatus === 'pending') {
-          toast('Your shop is pending admin approval. You\'ll be notified soon.', { icon: '⏳', duration: 5000 });
-          navigate('/shopkeeper/pending');
-        } else if (approvalStatus === 'rejected') {
-          toast.error('Your shop application was rejected. Check your dashboard for details.');
-          navigate('/shopkeeper/pending');
-        } else {
-          toast.success(`Welcome back, ${data.user.name}! 🏪`);
-          navigate('/shopkeeper');
-        }
       } else {
-        toast.success(`Welcome back, ${data.user.name}! 🎉`);
+        toast.success(`Welcome back, ${data.user.name}! 🍿`);
         navigate('/');
       }
     } catch (err) {
@@ -72,19 +54,12 @@ export default function LoginPage() {
         <div className="auth-brand">
           <span>🍿</span>
           <h2>SnackZone</h2>
-          <p>Your favourite snacks delivered from nearby shops. Fast and fresh.</p>
+          <p>Your favourite snacks, delivered fast from local shops.</p>
         </div>
         <div className="auth-features">
-          {['Phone OTP verified login','Order from local shops','Track delivery in real-time','Multiple payment options'].map(f => (
+          {['Order from nearby shops', 'Track delivery live', 'COD & online payments', 'Multiple cities served'].map(f => (
             <div key={f} className="auth-feature"><span>✓</span>{f}</div>
           ))}
-        </div>
-        <div className="auth-admin-shortcut">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-          </svg>
-          <span>Admin?</span>
-          <Link to="/admin/login">Go to Admin Portal →</Link>
         </div>
       </div>
 
@@ -92,7 +67,7 @@ export default function LoginPage() {
         <div className="auth-box animate-fadeInUp">
           <div className="auth-header">
             <h1>Welcome Back 👋</h1>
-            <p>New here? <Link to="/register">Create an account</Link></p>
+            <p>Don't have an account? <Link to="/register">Register here</Link></p>
           </div>
 
           <div className="auth-fields">
@@ -100,40 +75,72 @@ export default function LoginPage() {
               <label className="input-label">Phone Number</label>
               <div className="input-with-icon">
                 <span className="input-icon">📱</span>
-                <input className="input-field" type="tel" placeholder="10-digit mobile number" value={phone}
-                  maxLength={10} onChange={e => setPhone(e.target.value.replace(/\D/, ''))}
-                  onKeyDown={e => e.key === 'Enter' && handleSendOTP()} />
+                <input
+                  className="input-field"
+                  type="tel"
+                  placeholder="10-digit mobile number"
+                  value={phone}
+                  maxLength={10}
+                  onChange={e => setPhone(e.target.value.replace(/\D/, ''))}
+                  onKeyDown={e => e.key === 'Enter' && document.getElementById('pwd-input').focus()}
+                />
               </div>
             </div>
+
             <div className="input-group">
               <label className="input-label">Password</label>
               <div className="input-with-icon">
                 <span className="input-icon">🔒</span>
-                <input className="input-field" type="password" placeholder="Your password" value={password}
+                <input
+                  id="pwd-input"
+                  className="input-field"
+                  type={showPwd ? 'text' : 'password'}
+                  placeholder="Your password"
+                  value={password}
                   onChange={e => setPassword(e.target.value)}
-                  onKeyDown={e => e.key === 'Enter' && handleSendOTP()} />
+                  onKeyDown={e => e.key === 'Enter' && handleLogin()}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPwd(p => !p)}
+                  style={{ background:'none', border:'none', cursor:'pointer', padding:'0 2px', color:'var(--text-muted)', flexShrink:0 }}
+                  tabIndex={-1}
+                >
+                  {showPwd ? '🙈' : '👁️'}
+                </button>
               </div>
             </div>
-            <div style={{ display:'flex', justifyContent:'flex-end' }}>
-              <Link to="/forgot-password" style={{ fontSize:'0.78rem', color:'var(--saffron)', fontFamily:'var(--font-display)', fontWeight:600 }}>
+
+            <div style={{ textAlign: 'right', marginTop: -4 }}>
+              <Link to="/forgot-password" style={{ fontSize:'0.8rem', color:'var(--saffron)', fontFamily:'var(--font-display)', fontWeight:600 }}>
                 Forgot Password?
               </Link>
             </div>
-            <button className="btn btn-outline btn-full" onClick={handleSendOTP} disabled={sending || otpSent}>
-              {sending ? 'Sending OTP…' : otpSent ? '✓ OTP Sent' : 'Send OTP to Phone'}
+
+            <button
+              className="btn btn-primary btn-full btn-lg"
+              onClick={handleLogin}
+              disabled={loading}
+              style={{ marginTop: 8 }}
+            >
+              {loading ? <><span className="asn-mini-spin" /> Logging in…</> : 'Login →'}
             </button>
-            {otpSent && (
-              <div className="input-group animate-fadeInUp">
-                <label className="input-label">Enter OTP</label>
-                <input className="input-field otp-input" type="text" maxLength={6} placeholder="6-digit OTP"
-                  value={otp} onChange={e => setOtp(e.target.value.replace(/\D/, ''))}
-                  onKeyDown={e => e.key === 'Enter' && handleLogin()} autoFocus />
-                <button className="resend-btn" onClick={() => { setOtpSent(false); setOtp(''); handleSendOTP(); }}>Resend OTP</button>
-              </div>
-            )}
-            <button className="btn btn-primary btn-full btn-lg" onClick={handleLogin} disabled={loading || !otpSent}>
-              {loading ? 'Logging in…' : 'Login →'}
-            </button>
+
+            <div className="auth-divider">
+              <span>or</span>
+            </div>
+
+            <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
+              <Link to="/register" className="btn btn-outline btn-full">
+                Create New Account
+              </Link>
+              <Link to="/admin/login" className="btn btn-dark btn-full btn-sm" style={{ opacity:0.7 }}>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                </svg>
+                Admin Login
+              </Link>
+            </div>
           </div>
         </div>
       </div>

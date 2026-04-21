@@ -5,91 +5,75 @@ import toast from 'react-hot-toast';
 import './AuthPages.css';
 import './RegisterPage.css';
 
-const USER_STEPS     = ['Verify Phone', 'Personal Info', 'Address'];
-const SHOP_STEPS     = ['Verify Phone', 'Personal Info', 'Shop Details'];
-const DELIVERY_STEPS = ['Verify Phone', 'Personal Info', 'Review & Submit'];
+/* Step labels per mode */
+const STEPS = {
+  user:       ['Your Details', 'Delivery Address'],
+  shopkeeper: ['Your Details', 'Shop Details'],
+  delivery:   ['Your Details', 'Review & Submit'],
+};
 
 const FEATURES = {
-  user:     ['Phone OTP verification', 'Order from nearby shops', 'Track delivery live', 'COD & online payments'],
-  shopkeeper:['List your snacks easily', 'Get orders directly', 'Admin approval ensures quality', 'Manage orders in dashboard'],
-  delivery: ['Register as delivery partner', 'Get orders assigned to you', 'Live GPS navigation', 'OTP-based delivery confirmation'],
+  user:       ['Order from nearby shops', 'Track delivery live', 'COD & online payments', 'Multiple cities served'],
+  shopkeeper: ['List your snacks easily', 'Get orders directly', 'Admin approval ensures quality', 'Manage orders in dashboard'],
+  delivery:   ['Register as delivery partner', 'Get orders assigned to you', 'Live GPS navigation', 'OTP-based delivery confirmation'],
 };
 
 export default function RegisterPage() {
-  const { register, sendOTP, API } = useAuth();
+  const { register, API } = useAuth();
   const navigate = useNavigate();
-  const [mode,    setMode]    = useState('');
-  const [step,    setStep]    = useState(0);
+
+  const [mode, setMode] = useState('');   // '' | 'user' | 'shopkeeper' | 'delivery'
+  const [step, setStep] = useState(0);   // 0 = your details, 1 = address/shop/review
   const [loading, setLoading] = useState(false);
-  const [otpSent, setOtpSent] = useState(false);
+  const [showPwd, setShowPwd] = useState(false);
+
   const [form, setForm] = useState({
-    name:'', phone:'', password:'', confirmPassword:'', otp:'',
+    name:'', phone:'', password:'', confirmPassword:'',
+    // User address
     street:'', city:'', state:'', pincode:'', landmark:'',
+    // Shop details
     shopName:'', shopDescription:'', shopCity:'', shopState:'',
     shopAddress:'', shopPincode:'', shopServiceCities:'',
-    shopServicePincodes:'', shopDeliveryFee:'40', shopFreeAbove:'299',
-    shopLat:'', shopLng:'',
+    shopDeliveryFee:'40', shopFreeAbove:'299',
   });
-
-  const STEPS = mode === 'shopkeeper' ? SHOP_STEPS
-              : mode === 'delivery'   ? DELIVERY_STEPS
-              : USER_STEPS;
 
   const set = (k, v) => setForm(p => ({ ...p, [k]: v }));
 
-  /* ── Step 0: OTP ── */
-  const handleSendOTP = async () => {
-    if (!form.phone || form.phone.length < 10) { toast.error('Enter a valid 10-digit number'); return; }
-    setLoading(true);
-    try {
-      const res = await sendOTP(form.phone, 'register');
-      if (res.devOtp) toast.success(`DEV OTP: ${res.devOtp}`, { duration: 30000, icon: '🔑' });
-      else toast.success('OTP sent to your phone!');
-      setOtpSent(true);
-    } catch (err) { toast.error(err.response?.data?.message || 'Failed to send OTP'); }
-    finally { setLoading(false); }
-  };
-
+  /* ── Step 0: Validate details → go to step 1 ── */
   const handleStep0 = () => {
-    if (!form.phone)                      { toast.error('Enter your phone number'); return; }
-    if (!form.otp || form.otp.length !== 6) { toast.error('Enter the 6-digit OTP'); return; }
+    if (!form.name.trim())                         { toast.error('Enter your full name'); return; }
+    if (!form.phone || form.phone.length < 10)     { toast.error('Enter a valid 10-digit number'); return; }
+    if (!form.password || form.password.length < 6){ toast.error('Password must be at least 6 characters'); return; }
+    if (form.password !== form.confirmPassword)    { toast.error('Passwords do not match'); return; }
     setStep(1);
   };
 
-  /* ── Step 1: Personal info ── */
-  const handleStep1 = () => {
-    if (!form.name.trim())                        { toast.error('Enter your name'); return; }
-    if (!form.password || form.password.length < 6) { toast.error('Password must be at least 6 characters'); return; }
-    if (form.password !== form.confirmPassword)   { toast.error('Passwords do not match'); return; }
-    setStep(2);
-  };
-
-  /* ── Step 2 User: address ── */
+  /* ── Submit: Customer ── */
   const handleUserSubmit = async () => {
     if (!form.street || !form.city || !form.state || !form.pincode) {
-      toast.error('Fill all address fields'); return;
+      toast.error('Fill all required address fields'); return;
     }
     setLoading(true);
     try {
       await register({
-        name: form.name, phone: form.phone, password: form.password, otp: form.otp,
+        name: form.name, phone: form.phone, password: form.password,
         address: { label:'Home', street:form.street, city:form.city, state:form.state, pincode:form.pincode, landmark:form.landmark, isDefault:true },
       });
-      toast.success('Account created! Please login.');
-      navigate('/login');
+      toast.success('Account created! Welcome to SnackZone 🎉');
+      navigate('/');
     } catch (err) { toast.error(err.response?.data?.message || 'Registration failed'); }
     finally { setLoading(false); }
   };
 
-  /* ── Step 2 Shopkeeper: shop details ── */
-  const handleShopkeeperSubmit = async () => {
+  /* ── Submit: Shopkeeper ── */
+  const handleShopSubmit = async () => {
     if (!form.shopName || !form.shopCity || !form.shopState || !form.shopAddress || !form.shopPincode) {
       toast.error('Fill all required shop fields'); return;
     }
     setLoading(true);
     try {
       await API.post('/auth/register/shopkeeper', {
-        name: form.name, phone: form.phone, password: form.password, otp: form.otp,
+        name: form.name, phone: form.phone, password: form.password,
         shopData: {
           name:              form.shopName,
           description:       form.shopDescription,
@@ -98,32 +82,30 @@ export default function RegisterPage() {
           address:           form.shopAddress,
           pincode:           form.shopPincode,
           serviceCities:     form.shopServiceCities.split(',').map(s=>s.trim()).filter(Boolean),
-          servicePincodes:   form.shopServicePincodes.split(',').map(s=>s.trim()).filter(Boolean),
           deliveryFee:       parseFloat(form.shopDeliveryFee) || 40,
           freeDeliveryAbove: parseFloat(form.shopFreeAbove)   || 299,
-          ...(form.shopLat && form.shopLng ? { lat: form.shopLat, lng: form.shopLng } : {}),
         },
       });
-      toast.success('Registered! Awaiting admin approval. You\'ll be notified.', { duration: 6000 });
+      toast.success('Shop registered! Awaiting admin approval. 🏪', { duration: 6000 });
       navigate('/login');
     } catch (err) { toast.error(err.response?.data?.message || 'Registration failed'); }
     finally { setLoading(false); }
   };
 
-  /* ── Step 2 Delivery: submit ── */
+  /* ── Submit: Delivery ── */
   const handleDeliverySubmit = async () => {
     setLoading(true);
     try {
       await API.post('/auth/register/delivery', {
-        name: form.name, phone: form.phone, password: form.password, otp: form.otp,
+        name: form.name, phone: form.phone, password: form.password,
       });
-      toast.success('Registered! Awaiting admin activation. Contact your admin.', { duration: 6000 });
+      toast.success('Registered as delivery partner! Admin will activate your account. 🛵', { duration: 6000 });
       navigate('/login');
     } catch (err) { toast.error(err.response?.data?.message || 'Registration failed'); }
     finally { setLoading(false); }
   };
 
-  /* ── Mode selector ── */
+  /* ══ Mode selector screen ══ */
   if (!mode) return (
     <div className="auth-page rp-mode-page">
       <div className="rp-mode-card animate-fadeInUp">
@@ -140,12 +122,12 @@ export default function RegisterPage() {
           </button>
           <button className="rp-mode-btn rp-mode-btn--shop" onClick={() => setMode('shopkeeper')}>
             <span className="rp-mode-icon">🏪</span>
-            <div><strong>I'm a Shop Owner</strong><p>Register your shop & sell snacks</p></div>
+            <div><strong>I'm a Shop Owner</strong><p>Register your shop &amp; sell snacks</p></div>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="9 18 15 12 9 6"/></svg>
           </button>
           <button className="rp-mode-btn rp-mode-btn--delivery" onClick={() => setMode('delivery')}>
             <span className="rp-mode-icon">🛵</span>
-            <div><strong>I'm a Delivery Partner</strong><p>Register to deliver orders in your area</p></div>
+            <div><strong>I'm a Delivery Partner</strong><p>Register to deliver orders</p></div>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="9 18 15 12 9 6"/></svg>
           </button>
         </div>
@@ -156,15 +138,16 @@ export default function RegisterPage() {
     </div>
   );
 
-  /* ── Multi-step register form ── */
+  /* ══ Registration form ══ */
+  const steps = STEPS[mode];
   return (
     <div className="auth-page">
       <div className="auth-left">
         <div className="auth-brand">
           <span>{mode === 'shopkeeper' ? '🏪' : mode === 'delivery' ? '🛵' : '🍿'}</span>
           <h2>{mode === 'shopkeeper' ? 'Sell on SnackZone' : mode === 'delivery' ? 'Deliver for SnackZone' : 'SnackZone'}</h2>
-          <p>{mode === 'shopkeeper' ? 'Register your snack shop and reach customers in your city.'
-              : mode === 'delivery' ? 'Join our delivery team and earn while delivering fresh snacks.'
+          <p>{mode === 'shopkeeper' ? 'Register your shop and reach customers in your city.'
+              : mode === 'delivery' ? 'Join our delivery team and earn while delivering.'
               : 'Your favourite snacks, delivered fast from local shops.'}</p>
         </div>
         <div className="auth-features">
@@ -177,14 +160,16 @@ export default function RegisterPage() {
       <div className="auth-right">
         <div className="auth-box animate-fadeInUp">
           <div className="auth-header">
-            <button className="rp-back-btn" onClick={() => { setMode(''); setStep(0); setOtpSent(false); }}>← Back</button>
+            <button className="rp-back-btn" onClick={() => { if (step > 0) setStep(0); else setMode(''); }}>
+              ← Back
+            </button>
             <h1>{mode === 'shopkeeper' ? 'Shop Owner Register' : mode === 'delivery' ? 'Delivery Partner Register' : 'Create Account'}</h1>
             <p>Already have an account? <Link to="/login">Login here</Link></p>
           </div>
 
           {/* Progress steps */}
           <div className="steps-bar">
-            {STEPS.map((s, i) => (
+            {steps.map((s, i) => (
               <div key={s} className={`step-item ${i <= step ? 'done' : ''} ${i === step ? 'active' : ''}`}>
                 <div className="step-dot">{i < step ? '✓' : i + 1}</div>
                 <span>{s}</span>
@@ -192,41 +177,11 @@ export default function RegisterPage() {
             ))}
           </div>
 
-          {/* ── Step 0: Phone + OTP ── */}
+          {/* ── Step 0: Name + Phone + Password ── */}
           {step === 0 && (
             <div className="auth-fields">
               <div className="input-group">
-                <label className="input-label">Phone Number</label>
-                <div className="input-with-icon">
-                  <span className="input-icon">📱</span>
-                  <input className="input-field" type="tel" placeholder="10-digit mobile"
-                    value={form.phone} maxLength={10}
-                    onChange={e => set('phone', e.target.value.replace(/\D/, ''))} />
-                </div>
-              </div>
-              <button className="btn btn-outline btn-full" onClick={handleSendOTP} disabled={loading || otpSent}>
-                {loading ? 'Sending…' : otpSent ? '✓ OTP Sent' : 'Send OTP'}
-              </button>
-              {otpSent && (
-                <div className="input-group animate-fadeInUp">
-                  <label className="input-label">Enter OTP</label>
-                  <input className="input-field otp-input" type="text" maxLength={6}
-                    placeholder="6-digit OTP" autoFocus
-                    value={form.otp} onChange={e => set('otp', e.target.value.replace(/\D/, ''))} />
-                  <button className="resend-btn" onClick={() => { setOtpSent(false); handleSendOTP(); }}>Resend OTP</button>
-                </div>
-              )}
-              <button className="btn btn-primary btn-full btn-lg" onClick={handleStep0} disabled={!otpSent}>
-                Continue →
-              </button>
-            </div>
-          )}
-
-          {/* ── Step 1: Name + Password ── */}
-          {step === 1 && (
-            <div className="auth-fields">
-              <div className="input-group">
-                <label className="input-label">Full Name</label>
+                <label className="input-label">Full Name *</label>
                 <div className="input-with-icon">
                   <span className="input-icon">👤</span>
                   <input className="input-field" placeholder="Your full name"
@@ -234,30 +189,44 @@ export default function RegisterPage() {
                 </div>
               </div>
               <div className="input-group">
-                <label className="input-label">Password</label>
+                <label className="input-label">Phone Number *</label>
                 <div className="input-with-icon">
-                  <span className="input-icon">🔒</span>
-                  <input className="input-field" type="password" placeholder="Minimum 6 characters"
-                    value={form.password} onChange={e => set('password', e.target.value)} />
+                  <span className="input-icon">📱</span>
+                  <input className="input-field" type="tel" placeholder="10-digit mobile"
+                    value={form.phone} maxLength={10}
+                    onChange={e => set('phone', e.target.value.replace(/\D/, ''))} />
                 </div>
               </div>
               <div className="input-group">
-                <label className="input-label">Confirm Password</label>
+                <label className="input-label">Password *</label>
+                <div className="input-with-icon">
+                  <span className="input-icon">🔒</span>
+                  <input className="input-field" type={showPwd ? 'text' : 'password'}
+                    placeholder="Minimum 6 characters"
+                    value={form.password} onChange={e => set('password', e.target.value)} />
+                  <button type="button" onClick={() => setShowPwd(p => !p)}
+                    style={{ background:'none', border:'none', cursor:'pointer', padding:'0 2px', color:'var(--text-muted)', flexShrink:0 }} tabIndex={-1}>
+                    {showPwd ? '🙈' : '👁️'}
+                  </button>
+                </div>
+              </div>
+              <div className="input-group">
+                <label className="input-label">Confirm Password *</label>
                 <div className="input-with-icon">
                   <span className="input-icon">🔒</span>
                   <input className="input-field" type="password" placeholder="Repeat password"
-                    value={form.confirmPassword} onChange={e => set('confirmPassword', e.target.value)} />
+                    value={form.confirmPassword} onChange={e => set('confirmPassword', e.target.value)}
+                    onKeyDown={e => e.key === 'Enter' && handleStep0()} />
                 </div>
               </div>
-              <div className="auth-btns">
-                <button className="btn btn-ghost btn-full" onClick={() => setStep(0)}>← Back</button>
-                <button className="btn btn-primary btn-full btn-lg" onClick={handleStep1}>Continue →</button>
-              </div>
+              <button className="btn btn-primary btn-full btn-lg" onClick={handleStep0} style={{ marginTop:4 }}>
+                Continue →
+              </button>
             </div>
           )}
 
-          {/* ── Step 2 (User): Delivery Address ── */}
-          {step === 2 && mode === 'user' && (
+          {/* ── Step 1 (User): Address ── */}
+          {step === 1 && mode === 'user' && (
             <div className="auth-fields">
               <div className="input-group">
                 <label className="input-label">Street / Flat *</label>
@@ -289,18 +258,18 @@ export default function RegisterPage() {
                 </div>
               </div>
               <div className="auth-btns">
-                <button className="btn btn-ghost btn-full" onClick={() => setStep(1)}>← Back</button>
+                <button className="btn btn-ghost btn-full" onClick={() => setStep(0)}>← Back</button>
                 <button className="btn btn-primary btn-full btn-lg" onClick={handleUserSubmit} disabled={loading}>
-                  {loading ? 'Creating…' : 'Create Account 🎉'}
+                  {loading ? <><span className="asn-mini-spin"/> Creating…</> : 'Create Account 🎉'}
                 </button>
               </div>
             </div>
           )}
 
-          {/* ── Step 2 (Shopkeeper): Shop Details ── */}
-          {step === 2 && mode === 'shopkeeper' && (
+          {/* ── Step 1 (Shopkeeper): Shop Details ── */}
+          {step === 1 && mode === 'shopkeeper' && (
             <div className="auth-fields" style={{ maxHeight:'60vh', overflowY:'auto', paddingRight:4 }}>
-              <p className="rp-shop-hint">📋 Your shop will be reviewed by admin before going live (usually within 24 hours).</p>
+              <div className="rp-shop-hint">📋 Your shop will be reviewed by admin before going live.</div>
               <div className="input-group">
                 <label className="input-label">Shop Name *</label>
                 <input className="input-field" placeholder="e.g. KPM Snacks"
@@ -343,30 +312,25 @@ export default function RegisterPage() {
               </div>
               <div className="input-group">
                 <label className="input-label">Service Cities (comma separated)</label>
-                <input className="input-field" placeholder="Kanchipuram, Sriperumbudur, Walajabad"
+                <input className="input-field" placeholder="Kanchipuram, Sriperumbudur"
                   value={form.shopServiceCities} onChange={e => set('shopServiceCities', e.target.value)} />
               </div>
-              <div className="input-group">
-                <label className="input-label">Service Pincodes (comma separated)</label>
-                <input className="input-field" placeholder="631501, 631502"
-                  value={form.shopServicePincodes} onChange={e => set('shopServicePincodes', e.target.value)} />
-              </div>
               <div className="auth-btns">
-                <button className="btn btn-ghost btn-full" onClick={() => setStep(1)}>← Back</button>
-                <button className="btn btn-primary btn-full btn-lg" onClick={handleShopkeeperSubmit} disabled={loading}>
-                  {loading ? 'Submitting…' : 'Submit for Approval 🏪'}
+                <button className="btn btn-ghost btn-full" onClick={() => setStep(0)}>← Back</button>
+                <button className="btn btn-primary btn-full btn-lg" onClick={handleShopSubmit} disabled={loading}>
+                  {loading ? <><span className="asn-mini-spin"/> Submitting…</> : 'Submit for Approval 🏪'}
                 </button>
               </div>
             </div>
           )}
 
-          {/* ── Step 2 (Delivery): Review & Submit ── */}
-          {step === 2 && mode === 'delivery' && (
+          {/* ── Step 1 (Delivery): Review ── */}
+          {step === 1 && mode === 'delivery' && (
             <div className="auth-fields animate-fadeInUp">
               <div className="rp-delivery-review">
                 <span>🛵</span>
                 <h3>Almost there, {form.name}!</h3>
-                <p>You're registering as a <strong>Delivery Partner</strong>.</p>
+                <p>Registering as a <strong>Delivery Partner</strong>.</p>
                 <div className="rp-review-info">
                   <div className="rp-review-row"><span>Name</span><strong>{form.name}</strong></div>
                   <div className="rp-review-row"><span>Phone</span><strong>{form.phone}</strong></div>
@@ -376,14 +340,14 @@ export default function RegisterPage() {
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
                   </svg>
-                  After registration, an admin must <strong>activate your account</strong> from Admin → Users. Once activated, you can log in and receive delivery orders.
+                  After registration an admin must <strong>activate your account</strong>. You will then be able to log in and receive orders.
                 </div>
               </div>
               <div className="auth-btns">
-                <button className="btn btn-ghost btn-full" onClick={() => setStep(1)}>← Back</button>
+                <button className="btn btn-ghost btn-full" onClick={() => setStep(0)}>← Back</button>
                 <button className="btn btn-primary btn-full btn-lg" style={{ background:'#0EA5E9' }}
                   onClick={handleDeliverySubmit} disabled={loading}>
-                  {loading ? 'Registering…' : 'Register as Delivery Partner 🛵'}
+                  {loading ? <><span className="asn-mini-spin"/> Registering…</> : 'Register as Delivery Partner 🛵'}
                 </button>
               </div>
             </div>
