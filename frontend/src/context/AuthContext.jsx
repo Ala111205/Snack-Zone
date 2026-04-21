@@ -21,7 +21,9 @@ const getCacheTTL = (url) => {
 
 export const clearApiCache = () => apiCache.clear();
 
-const API = axios.create({ baseURL: '/api' });
+const API = axios.create({
+  baseURL: `${import.meta.env.VITE_API_URL}/api`
+});
 
 /* Cache successful GET responses */
 API.interceptors.response.use(response => {
