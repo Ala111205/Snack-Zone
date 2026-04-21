@@ -35,8 +35,18 @@ const allowedOrigins = [
 
 app.use(cors({
   origin: (origin, cb) => {
-    if (!origin || allowedOrigins.includes(origin)) return cb(null, true);
-    cb(new Error('Not allowed by CORS'));
+    // Allow non-browser tools (Postman, curl)
+    if (!origin) return cb(null, true);
+
+    // Normalize origin (remove trailing slash)
+    const normalizedOrigin = origin.replace(/\/$/, '');
+
+    if (allowedOrigins.includes(normalizedOrigin)) {
+      return cb(null, true);
+    }
+
+    console.error('❌ CORS blocked:', origin);
+    return cb(new Error('Not allowed by CORS'));
   },
   credentials: true,
 }));
