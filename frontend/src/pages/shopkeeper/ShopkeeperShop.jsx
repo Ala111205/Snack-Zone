@@ -41,6 +41,13 @@ export default function ShopkeeperShop() {
         openingTime:          data.openingTime || '09:00',
         closingTime:          data.closingTime || '21:00',
         ownerPhone:           data.ownerPhone || '',
+        // Payment details
+        paymentUpiId:         data.paymentUpiId || '',
+        paymentBankName:      data.paymentBankName || '',
+        paymentAccNo:         '',  // never pre-filled from server (masked)
+        paymentAccNoMasked:   data.paymentAccNoMasked || '',
+        paymentIFSC:          data.paymentIFSC || '',
+        paymentAccName:       data.paymentAccName || '',
       });
       setImgPrev(data.image ? `${IMG}${data.image}` : '');
     } catch (err) {
@@ -68,6 +75,10 @@ export default function ShopkeeperShop() {
 
     setSaving(true);
     try {
+      // Validate UPI ID format if provided
+      if (form.paymentUpiId && !/^[a-zA-Z0-9._-]+@[a-zA-Z0-9]+$/.test(form.paymentUpiId)) {
+        toast.error('Invalid UPI ID format (e.g. yourname@upi)'); return;
+      }
       const fd = new FormData();
       Object.entries(form).forEach(([k, v]) => fd.append(k, v));
       if (imgFile) fd.append('image', imgFile);
@@ -290,6 +301,80 @@ export default function ShopkeeperShop() {
                   <label className="input-label">Closing Time</label>
                   <input className="input-field" type="time" value={form.closingTime}
                     onChange={e => setF('closingTime', e.target.value)} />
+                </div>
+              </div>
+            </div>
+
+            {/* ── Payment & Bank Details ── */}
+            <div className="sks-form-section sks-payment-section">
+              <div className="sks-form-sec-title">
+                💳 Payment & Bank Details
+              </div>
+              <div className="sks-payment-notice">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/>
+                </svg>
+                <span>
+                  These details are <strong>encrypted and private</strong> — only you and the admin can see them.
+                  Your UPI ID is shown to customers so they can pay you directly when ordering online.
+                </span>
+              </div>
+
+              {/* UPI — primary, shown to customers */}
+              <div className="sks-upi-primary">
+                <div className="input-group">
+                  <label className="input-label">
+                    UPI ID *&nbsp;
+                    <span className="sks-badge-shown">Shown to customers</span>
+                  </label>
+                  <div className="input-with-icon">
+                    <span className="input-icon">💳</span>
+                    <input className="input-field" placeholder="yourshop@upi  or  9876543210@paytm"
+                      value={form.paymentUpiId}
+                      onChange={e => setF('paymentUpiId', e.target.value.trim())} />
+                  </div>
+                  <p className="sks-field-hint">
+                    Customers will pay to this UPI ID via GPay / PhonePe / Paytm.
+                    Leave blank to route payments to SnackZone admin.
+                  </p>
+                </div>
+              </div>
+
+              {/* Bank details — for admin records only */}
+              <div className="sks-bank-grid">
+                <div className="input-group">
+                  <label className="input-label">Account Holder Name</label>
+                  <input className="input-field" placeholder="Name on bank account"
+                    value={form.paymentAccName}
+                    onChange={e => setF('paymentAccName', e.target.value)} />
+                </div>
+                <div className="input-group">
+                  <label className="input-label">Bank Name</label>
+                  <input className="input-field" placeholder="e.g. State Bank of India"
+                    value={form.paymentBankName}
+                    onChange={e => setF('paymentBankName', e.target.value)} />
+                </div>
+              </div>
+              <div className="sks-bank-grid">
+                <div className="input-group">
+                  <label className="input-label">
+                    Account Number
+                    {form.paymentAccNoMasked && !form.paymentAccNo && (
+                      <span className="sks-masked-hint">  (saved: {form.paymentAccNoMasked})</span>
+                    )}
+                  </label>
+                  <input className="input-field" type="password" placeholder="Enter to update account number"
+                    value={form.paymentAccNo}
+                    autoComplete="new-password"
+                    onChange={e => setF('paymentAccNo', e.target.value.replace(/\D/, ''))} />
+                  <p className="sks-field-hint">Stored securely. Not shown after saving.</p>
+                </div>
+                <div className="input-group">
+                  <label className="input-label">IFSC Code</label>
+                  <input className="input-field" placeholder="e.g. SBIN0001234"
+                    value={form.paymentIFSC}
+                    onChange={e => setF('paymentIFSC', e.target.value.toUpperCase())}
+                    maxLength={11} />
                 </div>
               </div>
             </div>

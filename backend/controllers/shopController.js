@@ -55,7 +55,10 @@ const getShops = async (req, res) => {
         : [{ $or: searchOr }];
     }
 
-    let shops = await Shop.find(filter).populate('owner','name phone').sort({ rating:-1, totalOrders:-1 });
+    let shops = await Shop.find(filter)
+      .populate('owner','name phone')
+      .select('-paymentAccNo -paymentIFSC -paymentBankName -paymentAccName')
+      .sort({ rating:-1, totalOrders:-1 });
 
     if (lat && lng) {
       const uLat = parseFloat(lat), uLng = parseFloat(lng);
@@ -92,7 +95,10 @@ const getShop = async (req, res) => {
       const cached = await redis.get(key);
       if (cached) return res.json(JSON.parse(cached));
     }
-    const shop = await Shop.findOne({ _id:req.params.id, status:'approved' }).populate('owner','name phone');
+    const shop = await Shop.findOne({ _id:req.params.id, status:'approved' })
+      .populate('owner','name phone')
+      .select('-paymentAccNo -paymentIFSC -paymentBankName -paymentAccName');
+    // paymentUpiId IS included — customers need it to pay via UPI
     if (!shop) return res.status(404).json({ message:'Shop not found' });
     if (!redis.isNoop) await redis.setex(key, TTL.SHOP_DETAIL, JSON.stringify(shop.toObject()));
     res.json(shop);

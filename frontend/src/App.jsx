@@ -45,6 +45,7 @@ const DeliveryDashboard = lazy(() => import('./pages/delivery/DeliveryDashboard.
 const DeliveryOrderPage = lazy(() => import('./pages/delivery/DeliveryOrderPage.jsx'));
 const DeliveryEarnings    = lazy(() => import('./pages/delivery/DeliveryEarnings.jsx'));
 const AdminLiveTracking = lazy(() => import('./pages/admin/AdminLiveTracking.jsx'));
+const AdminCodNotifications = lazy(() => import('./pages/admin/AdminCodNotifications.jsx'));
 
 /* ── Helpers ─────────────────────────────────── */
 const Spinner = () => (
@@ -128,6 +129,7 @@ function AppRoutes() {
         <Route path="/admin/approvals"  element={<AdminRoute><AdminApprovals /></AdminRoute>} />
         <Route path="/admin/users"         element={<AdminRoute><AdminUsers        /></AdminRoute>} />
         <Route path="/admin/live-tracking" element={<AdminRoute><AdminLiveTracking /></AdminRoute>} />
+        <Route path="/admin/cod-notifications" element={<AdminRoute><AdminCodNotifications /></AdminRoute>} />
 
         {/* Shopkeeper panel */}
         <Route path="/shopkeeper"        element={<ShopkeeperRoute><ShopkeeperDashboard /></ShopkeeperRoute>} />

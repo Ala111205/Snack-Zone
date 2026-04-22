@@ -40,7 +40,15 @@ const getMyShop = async (req, res) => {
     if (!req.user.shopId) return res.status(404).json({ message: 'No shop linked to your account' });
     const shop = await Shop.findById(req.user.shopId).populate('owner', 'name phone');
     if (!shop) return res.status(404).json({ message: 'Shop not found' });
-    res.json(shop);
+
+    // Mask bank account number — show only last 4 digits, never send raw number
+    const shopObj = shop.toObject();
+    if (shopObj.paymentAccNo && shopObj.paymentAccNo.length >= 4) {
+      shopObj.paymentAccNoMasked = '••••' + shopObj.paymentAccNo.slice(-4);
+    }
+    delete shopObj.paymentAccNo;  // never expose raw account number to browser
+
+    res.json(shopObj);
   } catch (err) { res.status(500).json({ message: err.message }); }
 };
 
@@ -64,6 +72,13 @@ const updateMyShop = async (req, res) => {
 
     // Shopkeeper can't change status/approval — strip those fields
     delete data.status; delete data.isVerified; delete data.approvedBy;
+    delete data.isActive; delete data.adminNote; delete data.deactivatedBy;
+
+    // Bank account number: only update if a new value is provided
+    // If blank (shopkeeper didn't touch the field), keep existing value
+    if (!data.paymentAccNo || data.paymentAccNo.trim() === '') {
+      delete data.paymentAccNo;  // keep existing encrypted value
+    }
 
     Object.assign(shop, data);
     await shop.save();

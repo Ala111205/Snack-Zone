@@ -214,27 +214,44 @@ const updateOrderStatus = async (req, res) => {
 /* ── POST /api/orders/:id/collect-cash (delivery boy COD) ─── */
 const collectCash = async (req, res) => {
   try {
-    const order = await Order.findById(req.params.id);
+    const order = await Order.findById(req.params.id)
+      .populate('deliveryBoy', 'name phone')
+      .populate('shop', 'name');
     if (!order) return res.status(404).json({ message: 'Order not found' });
     if (order.orderStatus !== 'delivered')
       return res.status(400).json({ message: 'Order must be delivered before collecting cash' });
     if (order.paymentMethod !== 'cod')
       return res.status(400).json({ message: 'Not a COD order' });
-    if (order.deliveryBoy?.toString() !== req.user._id.toString())
+    if (order.deliveryBoy?._id?.toString() !== req.user._id.toString())
       return res.status(403).json({ message: 'Not your order' });
 
-    order.codCollected    = true;
-    order.codCollectedAt  = new Date();
-    order.paymentStatus   = 'paid';    // ← marks as paid so it counts in revenue
+    order.codCollected   = true;
+    order.codCollectedAt = new Date();
+    order.paymentStatus  = 'paid';
     order.statusHistory.push({ status: 'cod_collected', note: 'Cash collected by delivery partner', timestamp: new Date() });
     await order.save();
 
-    // Invalidate Redis cache so dashboard stats refresh
-    const { getClient, KEYS } = require('../config/redis');
-    const redis = getClient();
-    if (!redis.isNoop) {
-      await redis.del(`dborders:${req.user._id}`);
+    // ── Create admin notification ──────────────────────────
+    try {
+      const CodNotification = require('../models/CodNotification');
+      await CodNotification.create({
+        order:            order._id,
+        deliveryBoy:      req.user._id,
+        deliveryBoyName:  req.user.name  || order.deliveryBoy?.name,
+        deliveryBoyPhone: req.user.phone || order.deliveryBoy?.phone,
+        shop:             order.shop?._id || order.shop,
+        shopName:         order.shop?.name || '',
+        amount:           order.total,
+        collectedAt:      new Date(),
+      });
+    } catch (notifErr) {
+      console.warn('COD notification save failed:', notifErr.message);
     }
+
+    // ── Invalidate Redis cache ─────────────────────────────
+    const { getClient } = require('../config/redis');
+    const redis = getClient();
+    if (!redis.isNoop) await redis.del(`dborders:${req.user._id}`);
 
     res.json({ success: true, order });
   } catch (err) { res.status(500).json({ message: err.message }); }

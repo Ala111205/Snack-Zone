@@ -20,6 +20,20 @@ const shopSchema = new mongoose.Schema({
   ownerName:  { type: String },
   ownerPhone: { type: String },
 
+  // ── Payment details (stored encrypted-at-rest by MongoDB, never sent to clients) ──
+  // Admin sets VITE_ADMIN_UPI in .env to receive all UPI payments centrally.
+  // OR each shopkeeper can add their own UPI ID so payments go directly to them.
+  paymentUpiId:    { type: String, default: '' },    // e.g. shopname@upi
+  paymentBankName: { type: String, default: '' },    // e.g. SBI
+  paymentAccNo:    { type: String, default: '' },    // account number (masked in API)
+  paymentIFSC:     { type: String, default: '' },    // IFSC code
+  paymentAccName:  { type: String, default: '' },    // account holder name
+
+  // ── Admin notes / deactivation reason ───────────────────────────────────────────
+  adminNote:       { type: String, default: '' },    // admin feedback / reason for deactivation
+  deactivatedBy:   { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  deactivatedAt:   { type: Date },
+
   // ── Approval workflow ────────────────────────────
   status: {
     type: String,

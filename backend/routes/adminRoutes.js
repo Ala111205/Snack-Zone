@@ -164,4 +164,78 @@ router.patch('/users/:id/toggle-active', async (req, res) => {
   } catch (err) { res.status(500).json({ message: err.message }); }
 });
 
+/* ── Deactivate shop with admin note ─────────────────── */
+router.patch('/shops/:id/deactivate', async (req, res) => {
+  try {
+    const { reason } = req.body;
+    const shop = await Shop.findById(req.params.id);
+    if (!shop) return res.status(404).json({ message: 'Shop not found' });
+    shop.isActive      = false;
+    shop.adminNote     = reason || '';
+    shop.deactivatedBy = req.user._id;
+    shop.deactivatedAt = new Date();
+    await shop.save();
+    // Clear Redis
+    const { getClient } = require('../config/redis');
+    const redis = getClient();
+    if (!redis.isNoop) {
+      const keys = await redis.keys('shops:city:*');
+      if (keys.length) await Promise.all(keys.map(k => redis.del(k)));
+      await redis.del('shops:cities');
+    }
+    res.json({ message: `"${shop.name}" deactivated.`, shop });
+  } catch (err) { res.status(500).json({ message: err.message }); }
+});
+
+/* ── Reactivate shop ─────────────────────────────────── */
+router.patch('/shops/:id/reactivate', async (req, res) => {
+  try {
+    const shop = await Shop.findById(req.params.id);
+    if (!shop) return res.status(404).json({ message: 'Shop not found' });
+    if (shop.status !== 'approved') return res.status(400).json({ message: 'Shop must be approved first' });
+    shop.isActive      = true;
+    shop.adminNote     = '';
+    shop.deactivatedBy = undefined;
+    shop.deactivatedAt = undefined;
+    await shop.save();
+    res.json({ message: `"${shop.name}" reactivated and live.`, shop });
+  } catch (err) { res.status(500).json({ message: err.message }); }
+});
+
+/* ── Get COD notifications (admin) ──────────────────── */
+router.get('/cod-notifications', async (req, res) => {
+  try {
+    const CodNotification = require('../models/CodNotification');
+    const notes = await CodNotification.find({})
+      .sort({ collectedAt: -1 })
+      .limit(100)
+      .populate('order', 'total paymentMethod codCollectedAt');
+    res.json(notes);
+  } catch (err) { res.status(500).json({ message: err.message }); }
+});
+
+/* ── Mark COD notification as read ──────────────────── */
+router.patch('/cod-notifications/:id/read', async (req, res) => {
+  try {
+    const CodNotification = require('../models/CodNotification');
+    await CodNotification.findByIdAndUpdate(req.params.id, { isRead: true });
+    res.json({ success: true });
+  } catch (err) { res.status(500).json({ message: err.message }); }
+});
+
+/* ── Get shop payment details (admin only, masked) ───── */
+router.get('/shops/:id/payment', async (req, res) => {
+  try {
+    const shop = await Shop.findById(req.params.id)
+      .select('name paymentUpiId paymentBankName paymentAccNo paymentIFSC paymentAccName');
+    if (!shop) return res.status(404).json({ message: 'Shop not found' });
+    // Mask account number: show only last 4 digits
+    const masked = shop.toObject();
+    if (masked.paymentAccNo && masked.paymentAccNo.length > 4) {
+      masked.paymentAccNo = '●●●●' + masked.paymentAccNo.slice(-4);
+    }
+    res.json(masked);
+  } catch (err) { res.status(500).json({ message: err.message }); }
+});
+
 module.exports = router;

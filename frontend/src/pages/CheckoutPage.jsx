@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
 import { API } from '../context/AuthContext.jsx';
@@ -23,6 +23,7 @@ export default function CheckoutPage() {
   const [loading,          setLoading]          = useState(false);
   const [notes,            setNotes]            = useState('');
   const [showUPIModal,     setShowUPIModal]      = useState(false);
+  const [shopPayInfo,      setShopPayInfo]       = useState(null); // fresh shop UPI info
   const [upiPaymentMethod, setUpiPaymentMethod] = useState('');
   const [upiOrderData,     setUpiOrderData]     = useState(null);
   const [paymentLaunched,  setPaymentLaunched]  = useState(false);
@@ -32,10 +33,13 @@ export default function CheckoutPage() {
     const amount  = total;
     const note    = encodeURIComponent('SnackZone Order');
     const vpa     = upiId || 'snackzone@upi'; // merchant VPA
+    // Use shopkeeper's UPI if set, otherwise admin UPI
+    const payVpa  = merchantUPI;
+    const payName = encodeURIComponent(merchantName);
     const deepLinks = {
-      gpay:     `tez://upi/pay?pa=${vpa}&pn=SnackZone&am=${amount}&cu=INR&tn=${note}`,
-      phonepay: `phonepe://pay?pa=${vpa}&pn=SnackZone&am=${amount}&cu=INR&tn=${note}`,
-      paytm:    `paytmmp://pay?pa=${vpa}&pn=SnackZone&am=${amount}&cu=INR&tn=${note}`,
+      gpay:     `tez://upi/pay?pa=${payVpa}&pn=${payName}&am=${amount}&cu=INR&tn=${note}`,
+      phonepay: `phonepe://pay?pa=${payVpa}&pn=${payName}&am=${amount}&cu=INR&tn=${note}`,
+      paytm:    `paytmmp://pay?pa=${payVpa}&pn=${payName}&am=${amount}&cu=INR&tn=${note}`,
     };
     const fallback = {
       gpay:     `https://gpay.app.goo.gl/`,
@@ -75,7 +79,20 @@ export default function CheckoutPage() {
     } finally { setLoading(false); }
   };
 
-  const cartShopObj  = cart[0]?.shop;
+  // Fetch fresh shop info including paymentUpiId when cart loads
+  useEffect(() => {
+    const shopId = cart[0]?.shop?._id || (typeof cart[0]?.shop === 'string' ? cart[0].shop : null);
+    if (!shopId) return;
+    API.get(`/shops/${shopId}`, { skipCache: true })
+      .then(r => setShopPayInfo(r.data))
+      .catch(() => {});
+  }, [cart[0]?.shop]);
+
+  const cartShopObj  = shopPayInfo || cart[0]?.shop;
+  // Use shopkeeper's UPI if they have one, otherwise fall back to admin UPI
+  const ADMIN_UPI    = import.meta.env.VITE_ADMIN_UPI || 'snackzone@upi';
+  const merchantUPI  = cartShopObj?.paymentUpiId || ADMIN_UPI;
+  const merchantName = cartShopObj?.name ? `SnackZone - ${cartShopObj.name}` : 'SnackZone';
   const shopDelivFee = cartShopObj?.deliveryFee ?? 40;
   const shopFreeAbove = cartShopObj?.freeDeliveryAbove ?? 299;
   const deliveryFee  = cartTotal >= shopFreeAbove ? 0 : shopDelivFee;
@@ -91,9 +108,7 @@ export default function CheckoutPage() {
         toast.error('Fill all card details'); return;
       }
     }
-    if (['gpay', 'phonepay', 'paytm'].includes(paymentMethod) && !upiId) {
-      toast.error('Enter your UPI ID'); return;
-    }
+    // No longer require customer to enter UPI ID — merchant UPI is used automatically
 
     setLoading(true);
     try {
@@ -320,11 +335,10 @@ export default function CheckoutPage() {
               onClick={() => { setShowUPIModal(false); setPaymentLaunched(false); }}>
               Cancel
             </button>
-            {upiId && (
-              <p style={{ fontSize:'0.72rem', color:'var(--text-muted)', marginTop:12 }}>
-                Paying to UPI ID: <strong>{upiId}</strong>
-              </p>
-            )}
+            <p style={{ fontSize:'0.72rem', color:'var(--text-muted)', marginTop:12 }}>
+              Paying to: <strong>{merchantName}</strong><br/>
+              UPI ID: <strong>{merchantUPI}</strong>
+            </p>
           </div>
         </>
       )}
