@@ -43,29 +43,31 @@ API.interceptors.response.use(response => {
 
 /* Serve from cache on GET requests */
 API.interceptors.request.use(config => {
+  // 🔹 Attach token FIRST
+  const token = localStorage.getItem('snackzone_token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+
+  // 🔹 Then handle cache (GET only)
   if (config.method === 'get' && !config.skipCache) {
     const ttl = getCacheTTL(config.url || '');
     if (ttl > 0) {
       const key = config.url + JSON.stringify(config.params || {});
       const cached = apiCache.get(key);
+
       if (cached && cached.expiresAt > Date.now()) {
-        // Return a resolved promise with cached data — bypass network
         config.adapter = () => Promise.resolve({
-          data:    cached.data,
-          status:  200,
+          data: cached.data,
+          status: 200,
           headers: {},
           config,
-          cached:  true,
+          cached: true,
         });
       }
     }
   }
-  return config;
-});
 
-API.interceptors.request.use(config => {
-  const token = localStorage.getItem('snackzone_token');
-  if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;
 });
 

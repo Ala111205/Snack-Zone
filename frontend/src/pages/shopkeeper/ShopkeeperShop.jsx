@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { API } from '../../context/AuthContext.jsx';
 import ShopkeeperLayout from './ShopkeeperLayout.jsx';
+import { useAuth } from '../../context/AuthContext.jsx';
 import toast from 'react-hot-toast';
 import './ShopkeeperShop.css';
 
@@ -15,7 +16,13 @@ export default function ShopkeeperShop() {
   const [form,     setForm]     = useState({});
   const fileRef = useRef(null);
 
-  useEffect(() => { fetchShop(); }, []);
+  const { user, loading: authLoading } = useAuth();
+
+ useEffect(() => {
+  if (!authLoading && user) {
+    fetchShop();
+  }
+}, [authLoading, user]);
 
   const fetchShop = async () => {
     setLoading(true);

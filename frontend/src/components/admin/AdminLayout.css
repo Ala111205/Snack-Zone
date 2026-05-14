@@ -654,11 +654,10 @@
   .adm-topbar-date  { display: none; }
   .adm-topbar       { padding: 0 16px; height: 60px; }
   .adm-content      { padding: 18px 16px; }
-  .adm-stat-grid    { grid-template-columns: 1fr 1fr; gap: 12px; }
 }
 
 @media (max-width: 480px) {
-  .adm-stat-grid  { grid-template-columns: 1fr 1fr; }
+  .adm-stat-grid { grid-template-columns: repeat(1, 1fr); }
   .adm-admin-badge { display: none; }
   .adm-bc-page    { font-size: 0.88rem; }
 }

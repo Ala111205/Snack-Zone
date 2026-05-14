@@ -140,7 +140,7 @@ export default function Navbar() {
         <div className="navbar-inner">
           <Link to="/admin" className="navbar-logo">
             <span className="logo-icon">🍿</span>
-            <span className="logo-text">Snack<span>Zone</span></span>
+            <span className="admin-logo-text">Snack<span>Zone</span></span>
             <span className="navbar-admin-chip">Admin</span>
           </Link>
           <div className="navbar-actions">

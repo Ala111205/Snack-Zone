@@ -70,6 +70,9 @@
   font-weight: 800;
   color: var(--charcoal);
 }
+.admin-logo-text {
+  color: #FAFBFD;
+}
 .navbar--admin-strip .logo-text { color: #fff; }
 .logo-text span { color: var(--saffron); }
 

@@ -1,7 +1,7 @@
 .sko-layout { display:grid; grid-template-columns:380px 1fr; gap:22px; align-items:start; min-height:calc(100vh - 130px); }
 .sko-list { background:#fff; border-radius:18px; box-shadow:0 2px 10px rgba(26,26,46,0.07); overflow:hidden; display:flex; flex-direction:column; height:calc(100vh - 130px); }
 .sko-toolbar { padding:14px 16px; border-bottom:1px solid rgba(26,26,46,0.06); flex-shrink:0; }
-.sko-filters { display:flex; gap:5px; overflow-x:auto; scrollbar-width:none; }
+.sko-filters { display:flex; flex-wrap: wrap; gap:5px; overflow-x:auto; scrollbar-width:none; }
 .sko-filters::-webkit-scrollbar { display:none; }
 .sko-filter { white-space:nowrap; display:flex; align-items:center; gap:5px; padding:5px 10px; border-radius:100px; border:2px solid var(--border); background:#fff; font-family:var(--font-display); font-size:0.68rem; font-weight:700; color:var(--text-secondary); cursor:pointer; transition:var(--transition); }
 .sko-filter:hover { border-color:#7C3AED; color:#7C3AED; }
@@ -63,7 +63,7 @@
 }
 @media (max-width: 768px) {
   .sko-toolbar      { flex-direction: column; gap: 8px; align-items: stretch; }
-  .sko-filters      { overflow-x: auto; flex-wrap: nowrap; gap: 5px; padding-bottom: 2px; }
+  .sko-filters      { overflow-x: auto; gap: 5px; padding-bottom: 2px; }
   .sko-filters::-webkit-scrollbar { display: none; }
   .sko-filter       { white-space: nowrap; flex-shrink: 0; }
   .sko-rows         { max-height: none; }
